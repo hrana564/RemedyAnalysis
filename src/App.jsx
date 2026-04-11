@@ -44,30 +44,14 @@ function App() {
       <div className="app">
         {/* Emirates NBD Header */}
         <header className="navbar">
-          <div className="container container-lg">
+          <div className="container">
             <div className="navbar__inner">
-              <a href="/en" className="navbar__brand" id="logo-js" data-ctatext="Logo" data-ctaregion="Main Nav" data-ctacategory="Navigation" title="Emirates NBD" data-ctalink="https://www.emiratesnbd.com/en" data-event="ctaClick" data-ctatype="link">
-                <img src="/-/media/enbd/images/logos/horizontal_logo.svg?la=en&amp;hash=A33654369475CF9B1FA76FEB570F9B9D" alt="Emirates NBD" data-cmp-info="10" />
-                <span className="d-none">logo image</span>
+              <a href="/en" className="navbar__brand" title="Emirates NBD">
+                <img src="/-/media/enbd/images/logos/horizontal_logo.svg?la=en&amp;hash=A33654369475CF9B1FA76FEB570F9B9D" alt="Emirates NBD" />
               </a>
               
               <div className="navbar__content">
-                <nav className="main-menu-wrapper">
-                  <ul className="main-menu main-subnav-segment">
-                    <li><a href="/en/accounts" data-target="Accounts">Accounts</a></li>
-                    <li><a href="/en/cards/credit-cards" data-target="Cards">Cards</a></li>
-                    <li><a href="/en/loans" data-target="Loans">Loans</a></li>
-                    <li><a href="/en/foreign-exchange" data-target="Foreign Exchange">Foreign Exchange</a></li>
-                    <li><a href="/en/wealth" data-target="Wealth &amp; Insurance">Wealth &amp; Insurance</a></li>
-                    <li><a href="/en/ways-of-banking" data-target="Ways of Banking">Ways of Banking</a></li>
-                  </ul>
-                </nav>
-                
-                <div className="d-flex align-items-center ml-auto ml-xl-0">
-                  <a href="javascript:void(0);" className="navbar-search-toggle" aria-label="icon-search-2">
-                    <i className="icomoon icon-search-2"></i>
-                  </a>
-                  
+                <div className="d-flex align-items-center ml-auto">
                   <div className="user-info">
                     <span>Welcome, {username}</span>
                     <span className="role-badge">{userRole}</span>
@@ -98,29 +82,14 @@ function App() {
     <div className="app">
       {/* Emirates NBD Header */}
       <header className="navbar">
-        <div className="container container-lg">
+        <div className="container">
           <div className="navbar__inner">
-            <a href="/en" className="navbar__brand" id="logo-js" data-ctatext="Logo" data-ctaregion="Main Nav" data-ctacategory="Navigation" title="Emirates NBD" data-ctalink="https://www.emiratesnbd.com/en" data-event="ctaClick" data-ctatype="link">
-              <img src="/-/media/enbd/images/logos/horizontal_logo.svg?la=en&amp;hash=A33654369475CF9B1FA76FEB570F9B9D" alt="Emirates NBD" data-cmp-info="10" />
-              <span className="d-none">logo image</span>
+            <a href="/en" className="navbar__brand" title="Emirates NBD">
+              <img src="/-/media/enbd/images/logos/horizontal_logo.svg?la=en&amp;hash=A33654369475CF9B1FA76FEB570F9B9D" alt="Emirates NBD" />
             </a>
             
             <div className="navbar__content">
-              <nav className="main-menu-wrapper">
-                <ul className="main-menu main-subnav-segment">
-                  <li><a href="/en/accounts" data-target="Accounts">Accounts</a></li>
-                  <li><a href="/en/cards/credit-cards" data-target="Cards">Cards</a></li>
-                  <li><a href="/en/loans" data-target="Loans">Loans</a></li>
-                  <li><a href="/en/foreign-exchange" data-target="Foreign Exchange">Foreign Exchange</a></li>
-                  <li><a href="/en/wealth" data-target="Wealth &amp; Insurance">Wealth &amp; Insurance</a></li>
-                  <li><a href="/en/ways-of-banking" data-target="Ways of Banking">Ways of Banking</a></li>
-                </ul>
-              </nav>
-              
-              <div className="d-flex align-items-center ml-auto ml-xl-0">
-                <a href="javascript:void(0);" className="navbar-search-toggle" aria-label="icon-search-2">
-                  <i className="icomoon icon-search-2"></i>
-                </a>
+              <div className="d-flex align-items-center ml-auto">
               </div>
             </div>
           </div>
