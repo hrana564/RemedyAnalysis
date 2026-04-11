@@ -58,7 +58,7 @@ function App() {
                     <li><a href="/en/cards/credit-cards" data-target="Cards">Cards</a></li>
                     <li><a href="/en/loans" data-target="Loans">Loans</a></li>
                     <li><a href="/en/foreign-exchange" data-target="Foreign Exchange">Foreign Exchange</a></li>
-                    <li><a href="/en/wealth" data-target="Wealth & Insurance">Wealth & Insurance</a></li>
+                    <li><a href="/en/wealth" data-target="Wealth &amp; Insurance">Wealth &amp; Insurance</a></li>
                     <li><a href="/en/ways-of-banking" data-target="Ways of Banking">Ways of Banking</a></li>
                   </ul>
                 </nav>
@@ -112,7 +112,7 @@ function App() {
                   <li><a href="/en/cards/credit-cards" data-target="Cards">Cards</a></li>
                   <li><a href="/en/loans" data-target="Loans">Loans</a></li>
                   <li><a href="/en/foreign-exchange" data-target="Foreign Exchange">Foreign Exchange</a></li>
-                  <li><a href="/en/wealth" data-target="Wealth & Insurance">Wealth & Insurance</a></li>
+                  <li><a href="/en/wealth" data-target="Wealth &amp; Insurance">Wealth &amp; Insurance</a></li>
                   <li><a href="/en/ways-of-banking" data-target="Ways of Banking">Ways of Banking</a></li>
                 </ul>
               </nav>
