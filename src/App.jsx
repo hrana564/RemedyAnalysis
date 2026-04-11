@@ -42,34 +42,92 @@ function App() {
   if (isLoggedIn) {
     return (
       <div className="app">
-        <div className="dashboard-container">
-          <header className="dashboard-header">
-            <div className="logo">
-              <h2>Enterprise Network Dashboard</h2>
-            </div>
-            <div className="user-info">
-              <span>Welcome, {username}</span>
-              <span className="role-badge">{userRole}</span>
-              <button onClick={handleLogout} className="logout-btn">Logout</button>
-            </div>
-          </header>
-          <main className="dashboard-main">
-            <div className="welcome-card">
-              <h1>Access Granted</h1>
-              <p>You have successfully logged into the Enterprise Network Dashboard.</p>
-              <div className="user-details">
-                <p><strong>Username:</strong> {username}</p>
-                <p><strong>Role:</strong> {userRole}</p>
+        {/* Emirates NBD Header */}
+        <header className="navbar">
+          <div className="container container-lg">
+            <div className="navbar__inner">
+              <a href="/en" className="navbar__brand" id="logo-js" data-ctatext="Logo" data-ctaregion="Main Nav" data-ctacategory="Navigation" title="Emirates NBD" data-ctalink="https://www.emiratesnbd.com/en" data-event="ctaClick" data-ctatype="link">
+                <img src="/-/media/enbd/images/logos/horizontal_logo.svg?la=en&amp;hash=A33654369475CF9B1FA76FEB570F9B9D" alt="Emirates NBD" data-cmp-info="10" />
+                <span className="d-none">logo image</span>
+              </a>
+              
+              <div className="navbar__content">
+                <nav className="main-menu-wrapper">
+                  <ul className="main-menu main-subnav-segment">
+                    <li><a href="/en/accounts" data-target="Accounts">Accounts</a></li>
+                    <li><a href="/en/cards/credit-cards" data-target="Cards">Cards</a></li>
+                    <li><a href="/en/loans" data-target="Loans">Loans</a></li>
+                    <li><a href="/en/foreign-exchange" data-target="Foreign Exchange">Foreign Exchange</a></li>
+                    <li><a href="/en/wealth" data-target="Wealth & Insurance">Wealth & Insurance</a></li>
+                    <li><a href="/en/ways-of-banking" data-target="Ways of Banking">Ways of Banking</a></li>
+                  </ul>
+                </nav>
+                
+                <div className="d-flex align-items-center ml-auto ml-xl-0">
+                  <a href="javascript:void(0);" className="navbar-search-toggle" aria-label="icon-search-2">
+                    <i className="icomoon icon-search-2"></i>
+                  </a>
+                  
+                  <div className="user-info">
+                    <span>Welcome, {username}</span>
+                    <span className="role-badge">{userRole}</span>
+                    <button onClick={handleLogout} className="logout-btn">Logout</button>
+                  </div>
+                </div>
               </div>
             </div>
-          </main>
-        </div>
+          </div>
+        </header>
+        
+        {/* Dashboard Content */}
+        <main className="dashboard-main">
+          <div className="welcome-card">
+            <h1>Access Granted</h1>
+            <p>You have successfully logged into the Enterprise Network Dashboard.</p>
+            <div className="user-details">
+              <p><strong>Username:</strong> {username}</p>
+              <p><strong>Role:</strong> {userRole}</p>
+            </div>
+          </div>
+        </main>
       </div>
     )
   }
 
   return (
     <div className="app">
+      {/* Emirates NBD Header */}
+      <header className="navbar">
+        <div className="container container-lg">
+          <div className="navbar__inner">
+            <a href="/en" className="navbar__brand" id="logo-js" data-ctatext="Logo" data-ctaregion="Main Nav" data-ctacategory="Navigation" title="Emirates NBD" data-ctalink="https://www.emiratesnbd.com/en" data-event="ctaClick" data-ctatype="link">
+              <img src="/-/media/enbd/images/logos/horizontal_logo.svg?la=en&amp;hash=A33654369475CF9B1FA76FEB570F9B9D" alt="Emirates NBD" data-cmp-info="10" />
+              <span className="d-none">logo image</span>
+            </a>
+            
+            <div className="navbar__content">
+              <nav className="main-menu-wrapper">
+                <ul className="main-menu main-subnav-segment">
+                  <li><a href="/en/accounts" data-target="Accounts">Accounts</a></li>
+                  <li><a href="/en/cards/credit-cards" data-target="Cards">Cards</a></li>
+                  <li><a href="/en/loans" data-target="Loans">Loans</a></li>
+                  <li><a href="/en/foreign-exchange" data-target="Foreign Exchange">Foreign Exchange</a></li>
+                  <li><a href="/en/wealth" data-target="Wealth & Insurance">Wealth & Insurance</a></li>
+                  <li><a href="/en/ways-of-banking" data-target="Ways of Banking">Ways of Banking</a></li>
+                </ul>
+              </nav>
+              
+              <div className="d-flex align-items-center ml-auto ml-xl-0">
+                <a href="javascript:void(0);" className="navbar-search-toggle" aria-label="icon-search-2">
+                  <i className="icomoon icon-search-2"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      
+      {/* Login Form */}
       <div className="login-container">
         <div className="login-card">
           <div className="login-header">
