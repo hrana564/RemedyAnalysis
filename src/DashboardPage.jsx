@@ -1,186 +1,285 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Grid, 
-  Card, 
-  CardContent, 
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
   CardHeader,
   Chip,
+  useTheme,
+  TextField,
+  InputAdornment,
   List,
   ListItem,
   ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
+  Tooltip,
+  Avatar,
   Divider,
-  styled
+  Button
 } from '@mui/material';
-import { 
-  TrendingUp as TrendingUpIcon,
-  TrendingDown as TrendingDownIcon,
+import {
+  Search as SearchIcon,
   Assignment as AssignmentIcon,
-  CheckCircle as CheckCircleIcon,
-  HourglassBottom as HourglassBottomIcon,
-  CalendarToday as CalendarTodayIcon
+  Warning as WarningIcon,
+  QueryStats as QueryStatsIcon,
+  Info as InfoIcon,
+  Group as GroupIcon,
+  Visibility as VisibilityIcon
 } from '@mui/icons-material';
+import StackedBarChart from './StackedBarChart';
 
-const StatCard = styled(Card)(({ theme }) => ({
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  transition: 'transform 0.2s',
-  '&:hover': {
-    transform: 'translateY(-5px)',
-    boxShadow: '0 8px 20px rgba(0, 0, 0, 0.12)',
-  },
-}));
+// Load data from JSON file
+const loadTransactionsData = async () => {
+  try {
+    // Try to load from public directory (static files)
+    const response = await fetch('/transactions-data.json');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error loading transactions data:', error);
+    // Return default data if JSON file fails to load
+    return [
+      {
+        primaryIncident: {
+          incidentNumber: "INC-001",
+          summary: "System downtime reported",
+          detailedDescription: "Database server experiencing intermittent connectivity issues causing application slowdowns.",
+          createdOn: "2023-05-15T09:30:00Z",
+          assignedTo: "John Smith"
+        },
+        duplicates: [
+          {
+            incidentNumber: "INC-001-DUPLICATE-1",
+            summary: "System downtime reported",
+            detailedDescription: "Same issue as INC-001 but reported from different source",
+            createdOn: "2023-05-15T14:15:00Z",
+            assignedTo: "John Smith"
+          }
+        ],
+        similarIncidents: [
+          {
+            incidentNumber: "INC-003",
+            summary: "Performance degradation",
+            detailedDescription: "Similar symptoms but different root cause",
+            createdOn: "2023-05-17T11:20:00Z",
+            assignedTo: "Robert Johnson"
+          }
+        ]
+      },
+      {
+        primaryIncident: {
+          incidentNumber: "INC-002",
+          summary: "User authentication failure",
+          detailedDescription: "Multiple users unable to log into the system. Error messages indicate LDAP connection timeout.",
+          createdOn: "2023-05-16T10:45:00Z",
+          assignedTo: "Jane Doe"
+        },
+        duplicates: [],
+        similarIncidents: [
+          {
+            incidentNumber: "INC-005",
+            summary: "API endpoint failure",
+            detailedDescription: "Authentication-related API endpoint issue",
+            createdOn: "2023-05-19T13:30:00Z",
+            assignedTo: "Michael Wilson"
+          }
+        ]
+      }
+    ];
+  }
+};
 
 const DashboardPage = ({ username }) => {
-  // Sample dashboard data
-  const [stats, setStats] = useState({
-    totalIncidents: 0,
-    openIncidents: 0,
-    resolvedIncidents: 0,
-    pendingAssignments: 0
-  });
-
-  const [recentActivity, setRecentActivity] = useState([]);
+  const [incidents, setIncidents] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
+  const theme = useTheme();
 
   useEffect(() => {
-    // Simulate fetching data
-    setTimeout(() => {
-      setStats({
-        totalIncidents: 24,
-        openIncidents: 8,
-        resolvedIncidents: 16,
-        pendingAssignments: 3
-      });
-      
-      setRecentActivity([
-        { id: 1, action: 'New incident created', item: 'INC-008', time: '2 hours ago' },
-        { id: 2, action: 'Incident resolved', item: 'INC-007', time: '4 hours ago' },
-        { id: 3, action: 'Assignment updated', item: 'INC-006', time: '1 day ago' },
-        { id: 4, action: 'New comment added', item: 'INC-005', time: '1 day ago' }
-      ]);
-    }, 500);
+    const fetchData = async () => {
+      try {
+        const data = await loadTransactionsData();
+        setIncidents(data);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const StatCardComponent = ({ title, value, trend, icon: Icon, color }) => (
-    <StatCard>
-      <CardHeader
-        avatar={<Icon sx={{ color, fontSize: 32 }} />}
-        title={title}
-        sx={{ pb: 0 }}
-      />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="h4" component="div" sx={{ fontWeight: 700, mb: 1 }}>
-          {value}
-        </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {trend > 0 ? (
-            <TrendingUpIcon sx={{ color: 'success.main', mr: 0.5, fontSize: 16 }} />
-          ) : (
-            <TrendingDownIcon sx={{ color: 'error.main', mr: 0.5, fontSize: 16 }} />
-          )}
-          <Typography variant="body2" color="text.secondary">
-            {trend > 0 ? '+' : ''}{trend} from yesterday
-          </Typography>
-        </Box>
-      </CardContent>
-    </StatCard>
-  );
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  // Calculate statistics
+  const totalIncidents = incidents.length;
+  const duplicateIncidents = incidents.reduce((count, group) => count + group.duplicates.length, 0);
+  const similarIncidents = incidents.reduce((count, group) => count + group.similarIncidents.length, 0);
+
+  // Filter incidents based on search term
+  const filteredIncidents = incidents.filter(group => {
+    const primaryMatch = 
+      group.primaryIncident.incidentNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      group.primaryIncident.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      group.primaryIncident.detailedDescription.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const duplicateMatches = group.duplicates.some(duplicate => 
+      duplicate.incidentNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      duplicate.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      duplicate.detailedDescription.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
+    const similarMatches = group.similarIncidents.some(similar => 
+      similar.incidentNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      similar.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      similar.detailedDescription.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
+    return primaryMatch || duplicateMatches || similarMatches;
+  });
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%' }}>
+        <Typography variant="h6">Loading incident data...</Typography>
+      </Box>
+    );
+  }
+
+  const handleNodeClick = (incidentData) => {
+    setSelectedIncident(incidentData);
+  };
 
   return (
     <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+      {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
-          Dashboard
+          Incident Analysis Dashboard
         </Typography>
         <Typography variant="h6" color="text.secondary">
           Welcome back, {username}!
         </Typography>
       </Box>
 
-      {/* Stats Cards */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCardComponent
-            title="Total Incidents"
-            value={stats.totalIncidents}
-            trend={2}
-            icon={AssignmentIcon}
-            color="#003366"
+      {/* Summary Cards */}
+      <Box sx={{ display: 'flex', gap: 2, mb: 4, flexWrap: 'wrap' }}>
+        <Card sx={{ minWidth: 200, flexGrow: 1 }}>
+          <CardHeader
+            title={
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                Total Incidents
+              </Typography>
+            }
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCardComponent
-            title="Open Incidents"
-            value={stats.openIncidents}
-            trend={-1}
-            icon={HourglassBottomIcon}
-            color="#ff9800"
+          <CardContent>
+            <Typography variant="h4" component="div" sx={{ fontWeight: 700 }}>
+              {totalIncidents}
+            </Typography>
+          </CardContent>
+        </Card>
+        
+        <Card sx={{ minWidth: 200, flexGrow: 1 }}>
+          <CardHeader
+            title={
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                Duplicate Incidents
+              </Typography>
+            }
+            subheader={
+              <Typography variant="body2" color="text.secondary">
+                {duplicateIncidents} duplicates found
+              </Typography>
+            }
+            avatar={
+              <WarningIcon sx={{ color: theme.palette.error.main }} />
+            }
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCardComponent
-            title="Resolved Incidents"
-            value={stats.resolvedIncidents}
-            trend={5}
-            icon={CheckCircleIcon}
-            color="#4caf50"
+          <CardContent>
+            <Typography variant="h4" component="div" sx={{ fontWeight: 700, color: theme.palette.error.main }}>
+              {duplicateIncidents}
+            </Typography>
+          </CardContent>
+        </Card>
+        
+        <Card sx={{ minWidth: 200, flexGrow: 1 }}>
+          <CardHeader
+            title={
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                Similar Incidents
+              </Typography>
+            }
+            subheader={
+              <Typography variant="body2" color="text.secondary">
+                {similarIncidents} similar cases
+              </Typography>
+            }
+            avatar={
+              <QueryStatsIcon sx={{ color: theme.palette.warning.main }} />
+            }
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCardComponent
-            title="Pending Assignments"
-            value={stats.pendingAssignments}
-            trend={-1}
-            icon={CalendarTodayIcon}
-            color="#f44336"
-          />
-        </Grid>
-      </Grid>
+          <CardContent>
+            <Typography variant="h4" component="div" sx={{ fontWeight: 700, color: theme.palette.warning.main }}>
+              {similarIncidents}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
 
-      {/* Recent Activity */}
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Card>
-            <CardHeader
-              title={
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  Recent Activity
-                </Typography>
-              }
-            />
-            <CardContent>
-              <List>
-                {recentActivity.map((activity, index) => (
-                  <ListItem key={activity.id} sx={{ py: 1 }}>
-                  <ListItemText
-                    primary={
-                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        {activity.action}
-                      </Typography>
-                    }
-                      secondary={
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Chip 
-                            label={activity.item} 
-                            size="small" 
-                            variant="outlined" 
-                            color="primary" 
-                          />
-                          <Typography variant="caption" color="text.secondary" component="span">
-                            {activity.time}
-                          </Typography>
-                        </Box>
-                      }
-                  />
-                  </ListItem>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+      {/* Search Bar */}
+      <Box sx={{ mb: 3, maxWidth: 400 }}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          placeholder="Search incidents..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          sx={{ 
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '8px',
+              backgroundColor: theme.palette.background.paper
+            },
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: theme.palette.divider
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: theme.palette.primary.main
+            },
+            '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: theme.palette.primary.main
+            }
+          }}
+        />
+      </Box>
+
+      {/* Stacked Bar Chart Section */}
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 2 }}>
+          Incident Relationships Summary
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          Distribution of duplicates and similar incidents per primary incident (sorted by total count)
+        </Typography>
+        <Card>
+          <CardContent>
+            <StackedBarChart incidents={filteredIncidents} />
+          </CardContent>
+        </Card>
+      </Box>
+
+
     </Box>
   );
 };
