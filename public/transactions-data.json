@@ -1,0 +1,257 @@
+[
+  {
+    "primaryIncident": {
+      "incidentNumber": "INC-001",
+      "summary": "System downtime reported",
+      "detailedDescription": "Database server experiencing intermittent connectivity issues causing application slowdowns.",
+      "createdOn": "2023-05-15T09:30:00Z",
+      "assignedTo": "John Smith"
+    },
+    "duplicates": [
+      {
+        "incidentNumber": "INC-001-DUPLICATE-1",
+        "summary": "System downtime reported",
+        "detailedDescription": "Same issue as INC-001 but reported from different source",
+        "createdOn": "2023-05-15T14:15:00Z",
+        "assignedTo": "John Smith"
+      }
+    ],
+    "similarIncidents": [
+      {
+        "incidentNumber": "INC-003",
+        "summary": "Performance degradation",
+        "detailedDescription": "Similar symptoms but different root cause",
+        "createdOn": "2023-05-17T11:20:00Z",
+        "assignedTo": "Robert Johnson"
+      }
+    ]
+  },
+  {
+    "primaryIncident": {
+      "incidentNumber": "INC-002",
+      "summary": "User authentication failure",
+      "detailedDescription": "Multiple users unable to log into the system. Error messages indicate LDAP connection timeout.",
+      "createdOn": "2023-05-16T10:45:00Z",
+      "assignedTo": "Jane Doe"
+    },
+    "duplicates": [],
+    "similarIncidents": [
+      {
+        "incidentNumber": "INC-005",
+        "summary": "API endpoint failure",
+        "detailedDescription": "Authentication-related API endpoint issue",
+        "createdOn": "2023-05-19T13:30:00Z",
+        "assignedTo": "Michael Wilson"
+      }
+    ]
+  },
+  {
+    "primaryIncident": {
+      "incidentNumber": "INC-006",
+      "summary": "Network latency issues",
+      "detailedDescription": "Increased network response times affecting user experience across multiple regions.",
+      "createdOn": "2023-05-20T08:15:00Z",
+      "assignedTo": "Sarah Johnson"
+    },
+    "duplicates": [
+      {
+        "incidentNumber": "INC-006-DUPLICATE-1",
+        "summary": "Network latency issues",
+        "detailedDescription": "Duplicate report from another team member",
+        "createdOn": "2023-05-21T16:45:00Z",
+        "assignedTo": "Sarah Johnson"
+      }
+    ],
+    "similarIncidents": [
+      {
+        "incidentNumber": "INC-008",
+        "summary": "Bandwidth congestion",
+        "detailedDescription": "Similar network performance issues with different symptoms",
+        "createdOn": "2023-05-22T10:30:00Z",
+        "assignedTo": "David Brown"
+      }
+    ]
+  },
+  {
+    "primaryIncident": {
+      "incidentNumber": "INC-007",
+      "summary": "Memory leak detected",
+      "detailedDescription": "Application memory consumption increasing steadily over time without proper cleanup.",
+      "createdOn": "2023-05-23T14:20:00Z",
+      "assignedTo": "Emily Davis"
+    },
+    "duplicates": [],
+    "similarIncidents": [
+      {
+        "incidentNumber": "INC-009",
+        "summary": "Resource exhaustion",
+        "detailedDescription": "System resource constraints leading to application instability",
+        "createdOn": "2023-05-24T09:10:00Z",
+        "assignedTo": "Thomas Miller"
+      }
+    ]
+  },
+  {
+    "primaryIncident": {
+      "incidentNumber": "INC-010",
+      "summary": "UI rendering lag",
+      "detailedDescription": "Web application interface taking longer than expected to render components.",
+      "createdOn": "2023-05-25T11:00:00Z",
+      "assignedTo": "Lisa Wilson"
+    },
+    "duplicates": [
+      {
+        "incidentNumber": "INC-010-DUPLICATE-1",
+        "summary": "UI rendering lag",
+        "detailedDescription": "Same issue reported from mobile platform",
+        "createdOn": "2023-05-26T15:30:00Z",
+        "assignedTo": "Lisa Wilson"
+      }
+    ],
+    "similarIncidents": []
+  },
+  {
+    "primaryIncident": {
+      "incidentNumber": "INC-011",
+      "summary": "Email service outage",
+      "detailedDescription": "Email notifications not being sent to users. Service temporarily unavailable.",
+      "createdOn": "2023-05-27T08:45:00Z",
+      "assignedTo": "James Taylor"
+    },
+    "duplicates": [],
+    "similarIncidents": [
+      {
+        "incidentNumber": "INC-013",
+        "summary": "Notification service disruption",
+        "detailedDescription": "Related communication service issue affecting multiple notification channels",
+        "createdOn": "2023-05-28T12:20:00Z",
+        "assignedTo": "Jennifer Anderson"
+      }
+    ]
+  },
+  {
+    "primaryIncident": {
+      "incidentNumber": "INC-012",
+      "summary": "Data synchronization error",
+      "detailedDescription": "Mismatch between primary and backup database records during sync process.",
+      "createdOn": "2023-05-29T10:15:00Z",
+      "assignedTo": "Robert Thomas"
+    },
+    "duplicates": [
+      {
+        "incidentNumber": "INC-012-DUPLICATE-1",
+        "summary": "Data synchronization error",
+        "detailedDescription": "Issue reported by different department",
+        "createdOn": "2023-05-30T14:30:00Z",
+        "assignedTo": "Robert Thomas"
+      }
+    ],
+    "similarIncidents": [
+      {
+        "incidentNumber": "INC-014",
+        "summary": "Database replication failure",
+        "detailedDescription": "Similar data integrity issue with different root cause",
+        "createdOn": "2023-05-31T09:45:00Z",
+        "assignedTo": "Patricia Jackson"
+      }
+    ]
+  },
+  {
+    "primaryIncident": {
+      "incidentNumber": "INC-015",
+      "summary": "API rate limiting",
+      "detailedDescription": "Third-party API requests exceeding allowed limits causing service throttling.",
+      "createdOn": "2023-06-01T16:20:00Z",
+      "assignedTo": "Christopher Garcia"
+    },
+    "duplicates": [],
+    "similarIncidents": [
+      {
+        "incidentNumber": "INC-017",
+        "summary": "External service quota exceeded",
+        "detailedDescription": "Similar issue with different external provider",
+        "createdOn": "2023-06-02T11:10:00Z",
+        "assignedTo": "Amanda Martinez"
+      }
+    ]
+  },
+  {
+    "primaryIncident": {
+      "incidentNumber": "INC-016",
+      "summary": "Disk space warning",
+      "detailedDescription": "System storage reaching capacity threshold triggering alerts.",
+      "createdOn": "2023-06-03T07:30:00Z",
+      "assignedTo": "Daniel Rodriguez"
+    },
+    "duplicates": [
+      {
+        "incidentNumber": "INC-016-DUPLICATE-1",
+        "summary": "Disk space warning",
+        "detailedDescription": "Duplicate alert from monitoring system",
+        "createdOn": "2023-06-04T13:45:00Z",
+        "assignedTo": "Daniel Rodriguez"
+      }
+    ],
+    "similarIncidents": []
+  },
+  {
+    "primaryIncident": {
+      "incidentNumber": "INC-018",
+      "summary": "SSL certificate expiration",
+      "detailedDescription": "HTTPS certificate nearing expiration date requiring renewal.",
+      "createdOn": "2023-06-05T09:00:00Z",
+      "assignedTo": "Jessica Lopez"
+    },
+    "duplicates": [],
+    "similarIncidents": [
+      {
+        "incidentNumber": "INC-020",
+        "summary": "Certificate validation error",
+        "detailedDescription": "Related security certificate issue",
+        "createdOn": "2023-06-06T15:20:00Z",
+        "assignedTo": "Kevin Hernandez"
+      }
+    ]
+  },
+  {
+    "primaryIncident": {
+      "incidentNumber": "INC-019",
+      "summary": "Service dependency failure",
+      "detailedDescription": "Critical third-party service unavailable causing downstream impact.",
+      "createdOn": "2023-06-07T12:30:00Z",
+      "assignedTo": "Maria Gonzalez"
+    },
+    "duplicates": [
+      {
+        "incidentNumber": "INC-019-DUPLICATE-1",
+        "summary": "Service dependency failure",
+        "detailedDescription": "Same issue reported from integrated system",
+        "createdOn": "2023-06-08T10:15:00Z",
+        "assignedTo": "Maria Gonzalez"
+      },
+      {
+        "incidentNumber": "INC-0191-DUPLICATE-1",
+        "summary": "Service dependency failure 0191",
+        "detailedDescription": "Same issue reported from integrated system",
+        "createdOn": "2023-06-08T10:15:00Z",
+        "assignedTo": "Maria Gonzalez"
+      },
+      {
+        "incidentNumber": "INC-0192-DUPLICATE-1",
+        "summary": "Service dependency failure 0192",
+        "detailedDescription": "Same issue reported from integrated system",
+        "createdOn": "2023-06-08T10:15:00Z",
+        "assignedTo": "Maria Gonzalez"
+      }
+    ],
+    "similarIncidents": [
+      {
+        "incidentNumber": "INC-021",
+        "summary": "Integration service outage",
+        "detailedDescription": "Similar integration-related problem with different service",
+        "createdOn": "2023-06-09T14:45:00Z",
+        "assignedTo": "William Perez"
+      }
+    ]
+  }
+]

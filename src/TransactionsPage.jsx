@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -11,42 +11,98 @@ import {
   Paper,
   TableSortLabel,
   IconButton,
-  Tooltip
+  Tooltip,
+  Collapse,
+  Chip,
+  Alert,
+  useTheme
 } from '@mui/material';
-import { Search as SearchIcon, ArrowDropDown as ArrowDropDownIcon, ArrowDropUp as ArrowDropUpIcon } from '@mui/icons-material';
+import {
+  Search as SearchIcon,
+  ArrowDropDown as ArrowDropDownIcon,
+  ArrowDropUp as ArrowDropUpIcon,
+  ExpandMore as ExpandMoreIcon,
+  ExpandLess as ExpandLessIcon
+} from '@mui/icons-material';
+
+// Load data from JSON file
+const loadTransactionsData = async () => {
+  try {
+    // Try to load from public directory (static files)
+    const response = await fetch('/transactions-data.json');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error loading transactions data:', error);
+    // Return default data if JSON file fails to load
+    return [
+      {
+        primaryIncident: {
+          incidentNumber: "INC-001",
+          summary: "System downtime reported",
+          detailedDescription: "Database server experiencing intermittent connectivity issues causing application slowdowns.",
+          createdOn: "2023-05-15",
+          assignedTo: "John Smith"
+        },
+        duplicates: [
+          {
+            incidentNumber: "INC-001-DUPLICATE-1",
+            summary: "System downtime reported",
+            detailedDescription: "Same issue as INC-001 but reported from different source",
+            createdOn: "2023-05-15",
+            assignedTo: "John Smith"
+          }
+        ],
+        similarIncidents: [
+          {
+            incidentNumber: "INC-003",
+            summary: "Performance degradation",
+            detailedDescription: "Similar symptoms but different root cause",
+            createdOn: "2023-05-17",
+            assignedTo: "Robert Johnson"
+          }
+        ]
+      },
+      {
+        primaryIncident: {
+          incidentNumber: "INC-002",
+          summary: "User authentication failure",
+          detailedDescription: "Multiple users unable to log into the system. Error messages indicate LDAP connection timeout.",
+          createdOn: "2023-05-16",
+          assignedTo: "Jane Doe"
+        },
+        duplicates: [],
+        similarIncidents: [
+          {
+            incidentNumber: "INC-005",
+            summary: "API endpoint failure",
+            detailedDescription: "Authentication-related API endpoint issue",
+            createdOn: "2023-05-19",
+            assignedTo: "Michael Wilson"
+          }
+        ]
+      }
+    ];
+  }
+};
 
 const TransactionsPage = () => {
-  const [filteredTransactions, setFilteredTransactions] = useState([
-    {
-      incidentNumber: "INC-001",
-      summary: "System downtime reported",
-      detailedDescription: "Database server experiencing intermittent connectivity issues causing application slowdowns.",
-      createdOn: "2023-05-15",
-      assignedTo: "John Smith"
-    },
-    {
-      incidentNumber: "INC-002",
-      summary: "User authentication failure",
-      detailedDescription: "Multiple users unable to log into the system. Error messages indicate LDAP connection timeout.",
-      createdOn: "2023-05-16",
-      assignedTo: "Jane Doe"
-    }
-  ]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [expandedGroups, setExpandedGroups] = useState(new Set());
+  const [groupedTransactions, setGroupedTransactions] = useState([]);
+  const theme = useTheme();
+
+  useEffect(() => {
+    loadTransactionsData().then(data => {
+      setGroupedTransactions(data);
+    });
+  }, []);
 
   // Handle search
   const handleSearch = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
-    
-    const filtered = filteredTransactions.filter(transaction =>
-      transaction.incidentNumber.toLowerCase().includes(term.toLowerCase()) ||
-      transaction.summary.toLowerCase().includes(term.toLowerCase()) ||
-      transaction.detailedDescription.toLowerCase().includes(term.toLowerCase()) ||
-      transaction.assignedTo.toLowerCase().includes(term.toLowerCase())
-    );
-    setFilteredTransactions(filtered);
   };
 
   // Handle sorting
@@ -56,18 +112,6 @@ const TransactionsPage = () => {
       direction = 'desc';
     }
     setSortConfig({ key, direction });
-
-    const sortedTransactions = [...filteredTransactions].sort((a, b) => {
-      if (a[key] < b[key]) {
-        return direction === 'asc' ? -1 : 1;
-      }
-      if (a[key] > b[key]) {
-        return direction === 'asc' ? 1 : -1;
-      }
-      return 0;
-    });
-
-    setFilteredTransactions(sortedTransactions);
   };
 
   // Get sort indicator
@@ -76,14 +120,236 @@ const TransactionsPage = () => {
     return sortConfig.direction === 'asc' ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />;
   };
 
+  // Toggle expand/collapse group
+  const toggleExpandGroup = (groupIndex) => {
+    const newExpanded = new Set(expandedGroups);
+    if (newExpanded.has(groupIndex)) {
+      newExpanded.delete(groupIndex);
+    } else {
+      newExpanded.add(groupIndex);
+    }
+    setExpandedGroups(newExpanded);
+  };
+
+  // Filter grouped transactions based on search term
+  const getFilteredTransactions = () => {
+    if (!searchTerm) return groupedTransactions;
+    
+    return groupedTransactions.filter(group => {
+      const primaryMatch = 
+        group.primaryIncident.incidentNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        group.primaryIncident.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        group.primaryIncident.detailedDescription.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        group.primaryIncident.assignedTo.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const duplicateMatches = group.duplicates.some(duplicate => 
+        duplicate.incidentNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        duplicate.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        duplicate.detailedDescription.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        duplicate.assignedTo.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      
+      const similarMatches = group.similarIncidents.some(similar => 
+        similar.incidentNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        similar.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        similar.detailedDescription.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        similar.assignedTo.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      
+      return primaryMatch || duplicateMatches || similarMatches;
+    });
+  };
+
+  const filteredTransactions = getFilteredTransactions();
+
+  // Sort transactions
+  const getSortedTransactions = () => {
+    let sortableItems = [...filteredTransactions];
+    
+    if (sortConfig.key) {
+      sortableItems.sort((a, b) => {
+        let aValue, bValue;
+        
+        switch(sortConfig.key) {
+          case 'incidentNumber':
+            aValue = a.primaryIncident.incidentNumber;
+            bValue = b.primaryIncident.incidentNumber;
+            break;
+          case 'summary':
+            aValue = a.primaryIncident.summary;
+            bValue = b.primaryIncident.summary;
+            break;
+          case 'detailedDescription':
+            aValue = a.primaryIncident.detailedDescription;
+            bValue = b.primaryIncident.detailedDescription;
+            break;
+          case 'createdOn':
+            aValue = a.primaryIncident.createdOn;
+            bValue = b.primaryIncident.createdOn;
+            break;
+          case 'assignedTo':
+            aValue = a.primaryIncident.assignedTo;
+            bValue = b.primaryIncident.assignedTo;
+            break;
+          case 'duplicatesCount':
+            aValue = a.duplicates.length;
+            bValue = b.duplicates.length;
+            break;
+          case 'similarCount':
+            aValue = a.similarIncidents.length;
+            bValue = b.similarIncidents.length;
+            break;
+          default:
+            return 0;
+        }
+        
+        if (aValue < bValue) {
+          return sortConfig.direction === 'asc' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    
+    return sortableItems;
+  };
+
+  const sortedTransactions = getSortedTransactions();
+
+  // Render individual incident row
+  const renderIncidentRow = (incident, isPrimary = false, isDuplicate = false, isSimilar = false) => (
+    <TableRow hover key={incident.incidentNumber} sx={{ 
+      backgroundColor: isPrimary ? '#e8f5e9' : isDuplicate ? '#ffebee' : isSimilar ? '#fff3e0' : 'transparent',
+      '&:hover': { 
+        backgroundColor: isPrimary ? '#c8e6c9' : isDuplicate ? '#ffcdd2' : isSimilar ? '#ffcc80' : theme.palette.action.hover 
+      }
+    }}>
+      <TableCell>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {isPrimary && (
+            <Chip 
+              label="Primary" 
+              size="small" 
+              color="success" 
+              variant="outlined"
+              sx={{ fontWeight: 'bold', borderColor: '#4caf50', color: '#4caf50' }}
+            />
+          )}
+          {isDuplicate && (
+            <Chip 
+              label="Duplicate" 
+              size="small" 
+              color="error" 
+              variant="outlined"
+              sx={{ fontWeight: 'bold', borderColor: '#f44336', color: '#f44336' }}
+            />
+          )}
+          {isSimilar && (
+            <Chip 
+              label="Similar" 
+              size="small" 
+              color="warning" 
+              variant="outlined"
+              sx={{ fontWeight: 'bold', borderColor: '#ff9800', color: '#ff9800' }}
+            />
+          )}
+          {incident.incidentNumber}
+        </Box>
+      </TableCell>
+      <TableCell sx={{ color: theme.palette.text.primary, fontWeight: isPrimary ? 'bold' : 'normal' }}>{incident.summary}</TableCell>
+      <TableCell>
+        <Typography variant="body2" color="text.secondary" noWrap sx={{ maxWidth: 200 }}>
+          {incident.detailedDescription}
+        </Typography>
+      </TableCell>
+      <TableCell sx={{ color: theme.palette.text.primary }}>{incident.createdOn}</TableCell>
+      <TableCell sx={{ color: theme.palette.text.primary }}>{incident.assignedTo}</TableCell>
+    </TableRow>
+  );
+
+  // Render the expanded section for a group
+  const renderExpandedSection = (group, groupIndex) => {
+    const isExpanded = expandedGroups.has(groupIndex);
+    
+    return (
+      <React.Fragment>
+        <TableRow>
+          <TableCell colSpan={7} sx={{ p: 0, borderBottom: 'none' }}>
+            <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+              <Box sx={{ p: 2, borderTop: '1px solid ' + theme.palette.divider, backgroundColor: theme.palette.background.default }}>
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle2" gutterBottom sx={{ color: theme.palette.text.primary, fontWeight: 'bold' }}>
+                    Duplicates ({group.duplicates.length})
+                  </Typography>
+                  {group.duplicates.length > 0 ? (
+                    <Paper sx={{ mb: 2, backgroundColor: theme.palette.background.paper, width: '100%' }}>
+                      <Table size="small" sx={{ width: '100%', tableLayout: 'fixed' }}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '10%' }}>Incident Number</TableCell>
+                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '15%' }}>Summary</TableCell>
+                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '20%' }}>Description</TableCell>
+                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '10%' }}>Created On</TableCell>
+                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '10%' }}>Assigned To</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {group.duplicates.map(duplicate => renderIncidentRow(duplicate, false, true, false))}
+                        </TableBody>
+                      </Table>
+                    </Paper>
+                  ) : (
+                    <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                      No duplicates found
+                    </Typography>
+                  )}
+                </Box>
+                
+                <Box>
+                  <Typography variant="subtitle2" gutterBottom sx={{ color: theme.palette.text.primary, fontWeight: 'bold' }}>
+                    Similar Incidents ({group.similarIncidents.length})
+                  </Typography>
+                  {group.similarIncidents.length > 0 ? (
+                    <Paper sx={{ backgroundColor: theme.palette.background.paper, width: '100%' }}>
+                      <Table size="small" sx={{ width: '100%', tableLayout: 'fixed' }}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '10%' }}>Incident Number</TableCell>
+                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '15%' }}>Summary</TableCell>
+                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '20%' }}>Description</TableCell>
+                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '10%' }}>Created On</TableCell>
+                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '10%' }}>Assigned To</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {group.similarIncidents.map(similar => renderIncidentRow(similar, false, false, true))}
+                        </TableBody>
+                      </Table>
+                    </Paper>
+                  ) : (
+                    <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                      No similar incidents found
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </React.Fragment>
+    );
+  };
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Transaction Management
+        <Typography variant="h4" component="h1" gutterBottom sx={{ color: theme.palette.text.primary, fontWeight: 600 }}>
+          Incident Management
         </Typography>
         <Typography variant="subtitle1" color="text.secondary">
-          View and manage incident reports
+          View and manage grouped incident reports
         </Typography>
       </Box>
 
@@ -98,82 +364,161 @@ const TransactionsPage = () => {
           InputProps={{
             startAdornment: (
               <Tooltip title="Search incidents">
-                <IconButton edge="start" sx={{ mr: 1 }}>
+                <IconButton edge="start" sx={{ mr: 1, color: theme.palette.text.primary }}>
                   <SearchIcon />
                 </IconButton>
               </Tooltip>
             ),
+          }}
+          sx={{ 
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '8px',
+              backgroundColor: theme.palette.background.paper
+            },
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: theme.palette.divider
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: theme.palette.primary.main
+            },
+            '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: theme.palette.primary.main
+            }
           }}
         />
       </Box>
 
       {/* Transactions Table */}
       <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-        <Paper sx={{ boxShadow: 3, borderRadius: 2, width: '100%' }}>
+        <Paper sx={{ boxShadow: 3, borderRadius: 2, width: '100%', backgroundColor: theme.palette.background.paper, border: '1px solid ' + theme.palette.divider }}>
           <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <TableSortLabel
-                    active={sortConfig.key === 'incidentNumber'}
-                    direction={sortConfig.key === 'incidentNumber' ? sortConfig.direction : 'asc'}
-                    onClick={() => handleSort('incidentNumber')}
-                  >
-                    Incident Number {getSortIndicator('incidentNumber')}
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>
-                  <TableSortLabel
-                    active={sortConfig.key === 'summary'}
-                    direction={sortConfig.key === 'summary' ? sortConfig.direction : 'asc'}
-                    onClick={() => handleSort('summary')}
-                  >
-                    Summary {getSortIndicator('summary')}
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>
-                  <TableSortLabel
-                    active={sortConfig.key === 'detailedDescription'}
-                    direction={sortConfig.key === 'detailedDescription' ? sortConfig.direction : 'asc'}
-                    onClick={() => handleSort('detailedDescription')}
-                  >
-                    Detailed Description {getSortIndicator('detailedDescription')}
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>
-                  <TableSortLabel
-                    active={sortConfig.key === 'createdOn'}
-                    direction={sortConfig.key === 'createdOn' ? sortConfig.direction : 'asc'}
-                    onClick={() => handleSort('createdOn')}
-                  >
-                    Created On {getSortIndicator('createdOn')}
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>
-                  <TableSortLabel
-                    active={sortConfig.key === 'assignedTo'}
-                    direction={sortConfig.key === 'assignedTo' ? sortConfig.direction : 'asc'}
-                    onClick={() => handleSort('assignedTo')}
-                  >
-                    Assigned To {getSortIndicator('assignedTo')}
-                  </TableSortLabel>
-                </TableCell>
-              </TableRow>
-            </TableHead>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ width: '10%', color: theme.palette.text.primary, fontWeight: 'bold', backgroundColor: theme.palette.background.default }}>
+                <TableSortLabel
+                  active={sortConfig.key === 'incidentNumber'}
+                  direction={sortConfig.key === 'incidentNumber' ? sortConfig.direction : 'asc'}
+                  onClick={() => handleSort('incidentNumber')}
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  Incident Number {getSortIndicator('incidentNumber')}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sx={{ width: '15%', color: theme.palette.text.primary, fontWeight: 'bold', backgroundColor: theme.palette.background.default }}>
+                <TableSortLabel
+                  active={sortConfig.key === 'summary'}
+                  direction={sortConfig.key === 'summary' ? sortConfig.direction : 'asc'}
+                  onClick={() => handleSort('summary')}
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  Summary {getSortIndicator('summary')}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sx={{ width: '20%', color: theme.palette.text.primary, fontWeight: 'bold', backgroundColor: theme.palette.background.default }}>
+                <TableSortLabel
+                  active={sortConfig.key === 'detailedDescription'}
+                  direction={sortConfig.key === 'detailedDescription' ? sortConfig.direction : 'asc'}
+                  onClick={() => handleSort('detailedDescription')}
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  Description {getSortIndicator('detailedDescription')}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sx={{ width: '10%', color: theme.palette.text.primary, fontWeight: 'bold', backgroundColor: theme.palette.background.default }}>
+                <TableSortLabel
+                  active={sortConfig.key === 'createdOn'}
+                  direction={sortConfig.key === 'createdOn' ? sortConfig.direction : 'asc'}
+                  onClick={() => handleSort('createdOn')}
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  Created On {getSortIndicator('createdOn')}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sx={{ width: '10%', color: theme.palette.text.primary, fontWeight: 'bold', backgroundColor: theme.palette.background.default }}>
+                <TableSortLabel
+                  active={sortConfig.key === 'assignedTo'}
+                  direction={sortConfig.key === 'assignedTo' ? sortConfig.direction : 'asc'}
+                  onClick={() => handleSort('assignedTo')}
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  Assigned To {getSortIndicator('assignedTo')}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sx={{ width: '10%', color: theme.palette.text.primary, fontWeight: 'bold', backgroundColor: theme.palette.background.default }}>
+                <TableSortLabel
+                  active={sortConfig.key === 'duplicatesCount'}
+                  direction={sortConfig.key === 'duplicatesCount' ? sortConfig.direction : 'asc'}
+                  onClick={() => handleSort('duplicatesCount')}
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  Duplicates {getSortIndicator('duplicatesCount')}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sx={{ width: '15%', color: theme.palette.text.primary, fontWeight: 'bold', backgroundColor: theme.palette.background.default }}>
+                <TableSortLabel
+                  active={sortConfig.key === 'similarCount'}
+                  direction={sortConfig.key === 'similarCount' ? sortConfig.direction : 'asc'}
+                  onClick={() => handleSort('similarCount')}
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  Similar Incidents {getSortIndicator('similarCount')}
+                </TableSortLabel>
+              </TableCell>
+            </TableRow>
+          </TableHead>
             <TableBody>
-              {filteredTransactions.length > 0 ? (
-                filteredTransactions.map((transaction, index) => (
-                  <TableRow key={index} hover>
-                    <TableCell>{transaction.incidentNumber}</TableCell>
-                    <TableCell>{transaction.summary}</TableCell>
-                    <TableCell>{transaction.detailedDescription}</TableCell>
-                    <TableCell>{transaction.createdOn}</TableCell>
-                    <TableCell>{transaction.assignedTo}</TableCell>
-                  </TableRow>
+              {sortedTransactions.length > 0 ? (
+                sortedTransactions.map((group, groupIndex) => (
+                  <React.Fragment key={group.primaryIncident.incidentNumber}>
+                    {/* Primary Incident Row */}
+                    <TableRow 
+                      hover 
+                      sx={{ 
+                        cursor: 'pointer',
+                        backgroundColor: theme.palette.background.default,
+                        '&:hover': { backgroundColor: theme.palette.action.hover }
+                      }}
+                      onClick={() => toggleExpandGroup(groupIndex)}
+                    >
+                      <TableCell>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <IconButton size="small" sx={{ color: theme.palette.text.primary }}>
+                            {expandedGroups.has(groupIndex) ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                          </IconButton>
+                          <Chip 
+                            label="Primary" 
+                            size="small" 
+                            color="success" 
+                            variant="outlined"
+                            sx={{ 
+                              fontWeight: 'bold', 
+                              borderColor: '#4caf50', 
+                              color: '#4caf50',
+                              backgroundColor: theme.palette.background.default
+                            }}
+                          />
+                          {group.primaryIncident.incidentNumber}
+                        </Box>
+                      </TableCell>
+                      <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold' }}>{group.primaryIncident.summary}</TableCell>
+                      <TableCell>
+                        <Typography variant="body2" color="text.secondary" noWrap sx={{ maxWidth: 200 }}>
+                          {group.primaryIncident.detailedDescription}
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ color: theme.palette.text.primary }}>{group.primaryIncident.createdOn}</TableCell>
+                      <TableCell sx={{ color: theme.palette.text.primary }}>{group.primaryIncident.assignedTo}</TableCell>
+                      <TableCell sx={{ color: theme.palette.text.primary }}>{group.duplicates.length}</TableCell>
+                      <TableCell sx={{ color: theme.palette.text.primary }}>{group.similarIncidents.length}</TableCell>
+                    </TableRow>
+                    
+                    {/* Expanded Details */}
+                    {renderExpandedSection(group, groupIndex)}
+                  </React.Fragment>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
+                  <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
                     <Typography variant="body2" color="text.secondary">
                       No transactions found
                     </Typography>
