@@ -117,7 +117,8 @@ const DashboardPage = ({ username }) => {
   };
 
   // Calculate statistics
-  const totalIncidents = incidents.length;
+  const totalIncidents = incidents.length + incidents.reduce((count, group) => count + group.duplicates.length + group.similarIncidents.length, 0);
+  const primaryIncidents = incidents.length;
   const duplicateIncidents = incidents.reduce((count, group) => count + group.duplicates.length, 0);
   const similarIncidents = incidents.reduce((count, group) => count + group.similarIncidents.length, 0);
 
@@ -173,7 +174,12 @@ const DashboardPage = ({ username }) => {
           <CardHeader
             title={
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                Total Incidents
+                All Incidents
+              </Typography>
+            }
+            subheader={
+              <Typography variant="body2" color="text.secondary">
+                Primary + Duplicates + Similar
               </Typography>
             }
           />
@@ -188,12 +194,35 @@ const DashboardPage = ({ username }) => {
           <CardHeader
             title={
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                Primary Incidents
+              </Typography>
+            }
+            subheader={
+              <Typography variant="body2" color="text.secondary">
+                {primaryIncidents} primary cases
+              </Typography>
+            }
+            avatar={
+              <AssignmentIcon sx={{ color: theme.palette.info.main }} />
+            }
+          />
+          <CardContent>
+            <Typography variant="h4" component="div" sx={{ fontWeight: 700, color: theme.palette.info.main }}>
+              {primaryIncidents}
+            </Typography>
+          </CardContent>
+        </Card>
+        
+        <Card sx={{ minWidth: 200, flexGrow: 1 }}>
+          <CardHeader
+            title={
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 Duplicate Incidents
               </Typography>
             }
             subheader={
               <Typography variant="body2" color="text.secondary">
-                {duplicateIncidents} duplicates found
+                {duplicateIncidents} duplicates
               </Typography>
             }
             avatar={

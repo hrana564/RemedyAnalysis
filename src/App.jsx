@@ -34,6 +34,7 @@ import {
 import DashboardPage from './DashboardPage';
 import TransactionsPage from './TransactionsPage';
 import InputPage from './InputPage';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 
 // Create a theme
 const theme = createTheme({
@@ -104,80 +105,22 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
 }));
 
-const App = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentPage, setCurrentPage] = useState('login');
-  const [rememberMe, setRememberMe] = useState(false);
+// Navigation component with React Router
+const NavigationWithRouter = ({ handleLogout }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // Load login data from config.json
-  const loginData = {
-    "admin": {
-      "username": "admin",
-      "password": "admin123"
-    },
-    "users": [
-      {
-        "username": "user1",
-        "password": "user123"
-      }
-    ]
+  // Helper function to navigate with React Router
+  const handleNavigate = (path) => {
+    navigate(path);
   };
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    
-    // Clear previous errors
-    setError('');
-    
-    // Validate credentials
-    if (username.trim() === '') {
-      setError('Email address/Username is required');
-      return;
-    }
-    
-    if (password.trim() === '') {
-      setError('Password is required');
-      return;
-    }
-    
-    if (username === loginData.admin.username && password === loginData.admin.password) {
-      setIsLoggedIn(true);
-      setCurrentPage('dashboard');
-      setError('');
-    } else {
-      const user = loginData.users.find(u => u.username === username && u.password === password);
-      if (user) {
-        setIsLoggedIn(true);
-        setCurrentPage('dashboard');
-        setError('');
-      } else {
-        setError('Invalid username or password');
-      }
-    }
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUsername('');
-    setPassword('');
-    setCurrentPage('login');
-  };
-
-  const navigateTo = (page) => {
-    console.log('Navigating to page:', page); // Debugging line
-    setCurrentPage(page);
-  };
-
-  // Navigation component
-  const Navigation = () => (
+  return (
     <StyledAppBar position="static">
       <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Button
-            onClick={() => navigateTo('dashboard')}
+            onClick={() => handleNavigate('/dashboard')}
             startIcon={<DashboardIcon />}
             sx={{ 
               color: 'white', 
@@ -185,13 +128,14 @@ const App = () => {
               '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
               px: 2,
               py: 1,
-              minWidth: '120px'
+              minWidth: '120px',
+              ...(location.pathname === '/dashboard' ? { backgroundColor: 'rgba(255, 255, 255, 0.1)' } : {})
             }}
           >
             Dashboard
           </Button>
           <Button
-            onClick={() => navigateTo('transactions')}
+            onClick={() => handleNavigate('/transactions')}
             startIcon={<TransactionsIcon />}
             sx={{ 
               color: 'white', 
@@ -199,13 +143,14 @@ const App = () => {
               '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
               px: 2,
               py: 1,
-              minWidth: '120px'
+              minWidth: '120px',
+              ...(location.pathname === '/transactions' ? { backgroundColor: 'rgba(255, 255, 255, 0.1)' } : {})
             }}
           >
             Transactions
           </Button>
           <Button
-            onClick={() => navigateTo('input')}
+            onClick={() => handleNavigate('/input')}
             startIcon={<CodeIcon />}
             sx={{ 
               color: 'white', 
@@ -213,7 +158,8 @@ const App = () => {
               '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
               px: 2,
               py: 1,
-              minWidth: '120px'
+              minWidth: '120px',
+              ...(location.pathname === '/input' ? { backgroundColor: 'rgba(255, 255, 255, 0.1)' } : {})
             }}
           >
             Input
@@ -233,24 +179,14 @@ const App = () => {
       </Toolbar>
     </StyledAppBar>
   );
+};
 
-  if (isLoggedIn) {
-    return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-          <Navigation />
-          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-start', p: 2 }}>
-            <Container maxWidth="xl" sx={{ width: '100%', maxWidth: '1400px' }}>
-              {currentPage === 'dashboard' && <DashboardPage username={username} />}
-              {currentPage === 'transactions' && <TransactionsPage />}
-              {currentPage === 'input' && <InputPage />}
-            </Container>
-          </Box>
-        </Box>
-      </ThemeProvider>
-    );
-  }
+// Login page component
+const LoginPage = ({ onLogin, username, setUsername, password, setPassword, error, rememberMe, setRememberMe }) => {
+  const handleLogin = (e) => {
+    e.preventDefault();
+    onLogin(e);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -344,6 +280,104 @@ const App = () => {
         </StyledCard>
       </Box>
     </ThemeProvider>
+  );
+};
+
+// Main app component with routing
+const App = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
+  // Load login data from config.json
+  const loginData = {
+    "admin": {
+      "username": "admin",
+      "password": "admin123"
+    },
+    "users": [
+      {
+        "username": "user1",
+        "password": "user123"
+      }
+    ]
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    
+    // Clear previous errors
+    setError('');
+    
+    // Validate credentials
+    if (username.trim() === '') {
+      setError('Email address/Username is required');
+      return;
+    }
+    
+    if (password.trim() === '') {
+      setError('Password is required');
+      return;
+    }
+    
+    if (username === loginData.admin.username && password === loginData.admin.password) {
+      setIsLoggedIn(true);
+      setError('');
+    } else {
+      const user = loginData.users.find(u => u.username === username && u.password === password);
+      if (user) {
+        setIsLoggedIn(true);
+        setError('');
+      } else {
+        setError('Invalid username or password');
+      }
+    }
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUsername('');
+    setPassword('');
+  };
+
+  if (isLoggedIn) {
+    return (
+      <Router>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <NavigationWithRouter handleLogout={handleLogout} />
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-start', p: 2 }}>
+              <Container maxWidth="xl" sx={{ width: '100%', maxWidth: '1400px' }}>
+                <Routes>
+                  <Route path="/dashboard" element={<DashboardPage username={username} />} />
+                  <Route path="/transactions" element={<TransactionsPage />} />
+                  <Route path="/input" element={<InputPage />} />
+                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                </Routes>
+              </Container>
+            </Box>
+          </Box>
+        </ThemeProvider>
+      </Router>
+    );
+  }
+
+  return (
+    <Router>
+      <LoginPage 
+        onLogin={handleLogin}
+        username={username}
+        setUsername={setUsername}
+        password={password}
+        setPassword={setPassword}
+        error={error}
+        rememberMe={rememberMe}
+        setRememberMe={setRememberMe}
+      />
+    </Router>
   );
 };
 
