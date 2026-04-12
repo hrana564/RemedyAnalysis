@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Box, 
   Container, 
@@ -19,7 +19,9 @@ import {
   styled,
   CssBaseline,
   ThemeProvider,
-  createTheme
+  createTheme,
+  Alert,
+  AlertTitle
 } from '@mui/material';
 import { 
   AccountCircle, 
@@ -106,7 +108,7 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
 }));
 
 // Navigation component with React Router
-const NavigationWithRouter = ({ handleLogout }) => {
+const NavigationWithRouter = ({ handleLogout, username, role }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -119,6 +121,9 @@ const NavigationWithRouter = ({ handleLogout }) => {
     <StyledAppBar position="static">
       <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Typography variant="body1" sx={{ color: 'white', mr: 2 }}>
+            {username} ({role})
+          </Typography>
           <Button
             onClick={() => handleNavigate('/dashboard')}
             startIcon={<DashboardIcon />}
@@ -182,7 +187,7 @@ const NavigationWithRouter = ({ handleLogout }) => {
 };
 
 // Login page component
-const LoginPage = ({ onLogin, username, setUsername, password, setPassword, error, rememberMe, setRememberMe }) => {
+const LoginPage = ({ onLogin, username, setUsername, password, setPassword, error, rememberMe, setRememberMe, showCredentials }) => {
   const handleLogin = (e) => {
     e.preventDefault();
     onLogin(e);
@@ -211,6 +216,13 @@ const LoginPage = ({ onLogin, username, setUsername, password, setPassword, erro
             sx={{ pb: 0 }}
           />
           <CardContent>
+            {showCredentials && (
+              <Alert severity="info" sx={{ mb: 2 }}>
+                <AlertTitle>POC Credentials</AlertTitle>
+                <Typography variant="body2">Admin: admin / admin123</Typography>
+                <Typography variant="body2">User: user1 / user123</Typography>
+              </Alert>
+            )}
             <Box component="form" onSubmit={handleLogin} sx={{ mt: 2 }}>
               <TextField
                 fullWidth
@@ -255,7 +267,15 @@ const LoginPage = ({ onLogin, username, setUsername, password, setPassword, erro
               />
               {error && (
                 <Box sx={{ mt: 2 }}>
-                  <Typography color="error.main" variant="body2" align="center">
+                  <Typography 
+                    color="error" 
+                    variant="body2" 
+                    align="center"
+                    sx={{ 
+                      fontWeight: 'medium',
+                      fontSize: '0.875rem'
+                    }}
+                  >
                     {error}
                   </Typography>
                 </Box>
@@ -290,20 +310,52 @@ const App = () => {
   const [error, setError] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [userRole, setUserRole] = useState('');
+  const [showCredentials, setShowCredentials] = useState(false);
 
   // Load login data from config.json
   const loginData = {
     "admin": {
       "username": "admin",
-      "password": "admin123"
+      "password": "admin123",
+      "role": "admin"
     },
     "users": [
       {
         "username": "user1",
-        "password": "user123"
+        "password": "user123",
+        "role": "user"
       }
     ]
   };
+
+  // Check for saved session on app load
+  useEffect(() => {
+    const savedSession = localStorage.getItem('appSession');
+    if (savedSession) {
+      try {
+        const session = JSON.parse(savedSession);
+        const now = Date.now();
+        
+        // Check if session is still valid (10 minutes = 600000 ms)
+        if (session.expiresAt > now) {
+          // Valid session, auto-login
+          setIsLoggedIn(true);
+          setUsername(session.username);
+          setUserRole(session.role);
+        } else {
+          // Expired session, remove it
+          localStorage.removeItem('appSession');
+        }
+      } catch (e) {
+        // Invalid session data, remove it
+        localStorage.removeItem('appSession');
+      }
+    }
+    
+    // For POC, show credentials on login screen
+    setShowCredentials(true);
+  }, []);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -322,14 +374,40 @@ const App = () => {
       return;
     }
     
+    // Check admin credentials
     if (username === loginData.admin.username && password === loginData.admin.password) {
       setIsLoggedIn(true);
+      setUserRole(loginData.admin.role);
       setError('');
+      
+      // Save session if "Remember me" is checked
+      if (rememberMe) {
+        const expirationTime = Date.now() + 600000; // 10 minutes
+        const session = {
+          username: username,
+          role: loginData.admin.role,
+          expiresAt: expirationTime
+        };
+        localStorage.setItem('appSession', JSON.stringify(session));
+      }
     } else {
+      // Check user credentials
       const user = loginData.users.find(u => u.username === username && u.password === password);
       if (user) {
         setIsLoggedIn(true);
+        setUserRole(user.role);
         setError('');
+        
+        // Save session if "Remember me" is checked
+        if (rememberMe) {
+          const expirationTime = Date.now() + 600000; // 10 minutes
+          const session = {
+            username: username,
+            role: user.role,
+            expiresAt: expirationTime
+          };
+          localStorage.setItem('appSession', JSON.stringify(session));
+        }
       } else {
         setError('Invalid username or password');
       }
@@ -340,6 +418,8 @@ const App = () => {
     setIsLoggedIn(false);
     setUsername('');
     setPassword('');
+    setUserRole('');
+    localStorage.removeItem('appSession');
   };
 
   if (isLoggedIn) {
@@ -348,7 +428,7 @@ const App = () => {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <NavigationWithRouter handleLogout={handleLogout} />
+            <NavigationWithRouter handleLogout={handleLogout} username={username} role={userRole} />
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-start', p: 2 }}>
               <Container maxWidth="xl" sx={{ width: '100%', maxWidth: '1400px' }}>
                 <Routes>
@@ -376,6 +456,7 @@ const App = () => {
         error={error}
         rememberMe={rememberMe}
         setRememberMe={setRememberMe}
+        showCredentials={showCredentials}
       />
     </Router>
   );

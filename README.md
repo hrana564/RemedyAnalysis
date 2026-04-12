@@ -2,7 +2,7 @@
 
 while true; do echo "$(date '+%Y-%m-%d %H:%M:%S') - $(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader)°C" | tee -a cpu_temp.log; sleep 5; done
 
-$ opencode chat --model qwen-local/qwen-coder
+opencode chat --model qwen-local/qwen-coder
 
 npm install -g opencode-ai@latest
 

@@ -152,9 +152,21 @@ const InputPage = () => {
               </Box>
 
               {error && (
-                <Alert severity="error" sx={{ mt: 2 }}>
-                  {error}
-                </Alert>
+                <Box sx={{ mt: 2 }}>
+                  <Typography 
+                    color="error" 
+                    variant="body2"
+                    sx={{ 
+                      fontWeight: 'medium',
+                      fontSize: '0.875rem',
+                      p: 1.5,
+                      bgcolor: 'error.light',
+                      borderRadius: 1
+                    }}
+                  >
+                    {error}
+                  </Typography>
+                </Box>
               )}
             </CardContent>
           </Card>
