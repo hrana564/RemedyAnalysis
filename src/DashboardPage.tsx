@@ -28,7 +28,7 @@ import {
   Group as GroupIcon,
   Visibility as VisibilityIcon
 } from '@mui/icons-material';
-import StackedBarChart from './StackedBarChart';
+import StackedBarChart from './StackedBarChart.tsx';
 
 // Load data from JSON file
 const loadTransactionsData = async () => {
@@ -91,10 +91,38 @@ const loadTransactionsData = async () => {
   }
 };
 
-const DashboardPage = ({ username }) => {
-  const [incidents, setIncidents] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
+interface IncidentGroup {
+  primaryIncident: {
+    incidentNumber: string;
+    summary: string;
+    detailedDescription: string;
+    createdOn: string;
+    assignedTo: string;
+  };
+  duplicates: Array<{
+    incidentNumber: string;
+    summary: string;
+    detailedDescription: string;
+    createdOn: string;
+    assignedTo: string;
+  }>;
+  similarIncidents: Array<{
+    incidentNumber: string;
+    summary: string;
+    detailedDescription: string;
+    createdOn: string;
+    assignedTo: string;
+  }>;
+}
+
+interface DashboardPageProps {
+  username: string;
+}
+
+const DashboardPage = ({ username }: DashboardPageProps) => {
+  const [incidents, setIncidents] = useState<IncidentGroup[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
   const theme = useTheme();
 
   useEffect(() => {
@@ -112,7 +140,7 @@ const DashboardPage = ({ username }) => {
     fetchData();
   }, []);
 
-  const handleSearchChange = (event) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
@@ -152,8 +180,8 @@ const DashboardPage = ({ username }) => {
     );
   }
 
-  const handleNodeClick = (incidentData) => {
-    setSelectedIncident(incidentData);
+  const handleNodeClick = (incidentData: IncidentGroup) => {
+    // setSelectedIncident(incidentData);
   };
 
   return (
@@ -303,7 +331,9 @@ const DashboardPage = ({ username }) => {
         </Typography>
         <Card>
           <CardContent>
-            <StackedBarChart incidents={filteredIncidents} />
+            <Box sx={{ height: 400 }}>
+              <StackedBarChart incidents={filteredIncidents} />
+            </Box>
           </CardContent>
         </Card>
       </Box>

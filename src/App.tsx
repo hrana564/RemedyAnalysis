@@ -108,12 +108,18 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
 }));
 
 // Navigation component with React Router
-const NavigationWithRouter = ({ handleLogout, username, role }) => {
+interface NavigationProps {
+  handleLogout: () => void;
+  username: string;
+  role: string;
+}
+
+const NavigationWithRouter = ({ handleLogout, username, role }: NavigationProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   // Helper function to navigate with React Router
-  const handleNavigate = (path) => {
+  const handleNavigate = (path: string) => {
     navigate(path);
   };
 
@@ -187,8 +193,49 @@ const NavigationWithRouter = ({ handleLogout, username, role }) => {
 };
 
 // Login page component
-const LoginPage = ({ onLogin, username, setUsername, password, setPassword, error, rememberMe, setRememberMe, showCredentials }) => {
-  const handleLogin = (e) => {
+interface LoginPageProps {
+  onLogin: (e: React.FormEvent) => void;
+  username: string;
+  setUsername: (username: string) => void;
+  password: string;
+  setPassword: (password: string) => void;
+  error: string;
+  rememberMe: boolean;
+  setRememberMe: (rememberMe: boolean) => void;
+  showCredentials: boolean;
+}
+
+// Define a safe wrapper to prevent prop spreading issues
+const SafeLoginPage = (props: LoginPageProps) => {
+  const { onLogin, username, setUsername, password, setPassword, error, rememberMe, setRememberMe, showCredentials } = props;
+  
+  return (
+    <LoginPage 
+      onLogin={onLogin}
+      username={username}
+      setUsername={setUsername}
+      password={password}
+      setPassword={setPassword}
+      error={error}
+      rememberMe={rememberMe}
+      setRememberMe={setRememberMe}
+      showCredentials={showCredentials}
+    />
+  );
+};
+
+const LoginPage = ({ 
+  onLogin, 
+  username, 
+  setUsername, 
+  password, 
+  setPassword, 
+  error, 
+  rememberMe, 
+  setRememberMe, 
+  showCredentials 
+}: LoginPageProps) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     onLogin(e);
   };
@@ -305,13 +352,13 @@ const LoginPage = ({ onLogin, username, setUsername, password, setPassword, erro
 
 // Main app component with routing
 const App = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const [userRole, setUserRole] = useState('');
-  const [showCredentials, setShowCredentials] = useState(false);
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
+  const [userRole, setUserRole] = useState<string>('');
+  const [showCredentials, setShowCredentials] = useState<boolean>(false);
 
   // Load login data from config.json
   const loginData = {
@@ -328,6 +375,9 @@ const App = () => {
       }
     ]
   };
+
+  // Initialize state properly to prevent initialization issues
+  const [initialStateLoaded, setInitialStateLoaded] = useState(false);
 
   // Check for saved session on app load
   useEffect(() => {
@@ -355,9 +405,12 @@ const App = () => {
     
     // For POC, show credentials on login screen
     setShowCredentials(true);
+    
+    // Set initialization complete
+    setInitialStateLoaded(true);
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
     // Clear previous errors
@@ -447,7 +500,7 @@ const App = () => {
 
   return (
     <Router>
-      <LoginPage 
+      <SafeLoginPage 
         onLogin={handleLogin}
         username={username}
         setUsername={setUsername}

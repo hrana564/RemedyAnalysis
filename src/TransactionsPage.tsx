@@ -15,7 +15,8 @@ import {
   Collapse,
   Chip,
   Alert,
-  useTheme
+  useTheme,
+  InputAdornment
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -86,11 +87,27 @@ const loadTransactionsData = async () => {
   }
 };
 
+interface Incident {
+  incidentNumber: string;
+  summary: string;
+  detailedDescription: string;
+  createdOn: string;
+  assignedTo: string;
+}
+
+interface IncidentGroup {
+  primaryIncident: Incident;
+  duplicates: Incident[];
+  similarIncidents: Incident[];
+}
+
+interface TransactionsPageProps {}
+
 const TransactionsPage = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
-  const [expandedGroups, setExpandedGroups] = useState(new Set());
-  const [groupedTransactions, setGroupedTransactions] = useState([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
+  const [expandedGroups, setExpandedGroups] = useState<Set<number>>(new Set());
+  const [groupedTransactions, setGroupedTransactions] = useState<IncidentGroup[]>([]);
   const theme = useTheme();
 
   useEffect(() => {
@@ -100,14 +117,14 @@ const TransactionsPage = () => {
   }, []);
 
   // Handle search
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
     setSearchTerm(term);
   };
 
   // Handle sorting
-  const handleSort = (key) => {
-    let direction = 'asc';
+  const handleSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
       direction = 'desc';
     }
@@ -115,13 +132,13 @@ const TransactionsPage = () => {
   };
 
   // Get sort indicator
-  const getSortIndicator = (key) => {
+  const getSortIndicator = (key: string) => {
     if (sortConfig.key !== key) return null;
     return sortConfig.direction === 'asc' ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />;
   };
 
   // Toggle expand/collapse group
-  const toggleExpandGroup = (groupIndex) => {
+  const toggleExpandGroup = (groupIndex: number) => {
     const newExpanded = new Set(expandedGroups);
     if (newExpanded.has(groupIndex)) {
       newExpanded.delete(groupIndex);
@@ -132,7 +149,7 @@ const TransactionsPage = () => {
   };
 
   // Filter grouped transactions based on search term
-  const getFilteredTransactions = () => {
+  const getFilteredTransactions = (): IncidentGroup[] => {
     if (!searchTerm) return groupedTransactions;
     
     return groupedTransactions.filter(group => {
@@ -163,12 +180,12 @@ const TransactionsPage = () => {
   const filteredTransactions = getFilteredTransactions();
 
   // Sort transactions
-  const getSortedTransactions = () => {
+  const getSortedTransactions = (): IncidentGroup[] => {
     let sortableItems = [...filteredTransactions];
     
     if (sortConfig.key) {
       sortableItems.sort((a, b) => {
-        let aValue, bValue;
+        let aValue: any, bValue: any;
         
         switch(sortConfig.key) {
           case 'incidentNumber':
@@ -219,7 +236,7 @@ const TransactionsPage = () => {
   const sortedTransactions = getSortedTransactions();
 
   // Render individual incident row
-  const renderIncidentRow = (incident, isPrimary = false, isDuplicate = false, isSimilar = false) => (
+  const renderIncidentRow = (incident: Incident, isPrimary = false, isDuplicate = false, isSimilar = false) => (
     <TableRow hover key={incident.incidentNumber} sx={{ 
       backgroundColor: isPrimary ? '#e8f5e9' : isDuplicate ? '#ffebee' : isSimilar ? '#fff3e0' : 'transparent',
       '&:hover': { 
@@ -270,7 +287,7 @@ const TransactionsPage = () => {
   );
 
   // Render the expanded section for a group
-  const renderExpandedSection = (group, groupIndex) => {
+  const renderExpandedSection = (group: IncidentGroup, groupIndex: number) => {
     const isExpanded = expandedGroups.has(groupIndex);
     
     return (
@@ -363,11 +380,13 @@ const TransactionsPage = () => {
           onChange={handleSearch}
           InputProps={{
             startAdornment: (
-              <Tooltip title="Search incidents">
-                <IconButton edge="start" sx={{ mr: 1, color: theme.palette.text.primary }}>
-                  <SearchIcon />
-                </IconButton>
-              </Tooltip>
+              <InputAdornment position="start">
+                <Tooltip title="Search incidents">
+                  <IconButton edge="start" sx={{ mr: 1, color: theme.palette.text.primary }}>
+                    <SearchIcon />
+                  </IconButton>
+                </Tooltip>
+              </InputAdornment>
             ),
           }}
           sx={{ 

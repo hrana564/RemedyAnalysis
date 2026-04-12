@@ -10,9 +10,23 @@ import {
   ResponsiveContainer
 } from 'recharts';
 
-const StackedBarChart = ({ incidents }) => {
+interface IncidentGroup {
+  primaryIncident: {
+    incidentNumber: string;
+  };
+  duplicates: Array<any>;
+  similarIncidents: Array<any>;
+}
+
+interface ChartDataItem {
+  name: string;
+  duplicates: number;
+  similar: number;
+}
+
+const StackedBarChart: React.FC<{ incidents: IncidentGroup[] }> = ({ incidents }) => {
   // Process data to create stacked bar chart data
-  const chartData = incidents
+  const chartData: ChartDataItem[] = incidents
     .map(group => {
       const primaryIncident = group.primaryIncident;
       const duplicateCount = group.duplicates.length;
@@ -27,8 +41,17 @@ const StackedBarChart = ({ incidents }) => {
     .sort((a, b) => (a.duplicates + a.similar) - (b.duplicates + b.similar)) // Sort by total count
     .reverse(); // Highest to lowest
 
+  // Handle case where chart data might be empty
+  if (chartData.length === 0) {
+    return (
+      <div style={{ width: '100%', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span>No data available</span>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ width: '100%', height: '400px' }}>
+    <div style={{ width: '100%', height: '400px', minWidth: 0, minHeight: 0 }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={chartData}
@@ -39,6 +62,7 @@ const StackedBarChart = ({ incidents }) => {
             left: 100,
             bottom: 5,
           }}
+          syncId="stacked-bar-chart"
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis type="number" />

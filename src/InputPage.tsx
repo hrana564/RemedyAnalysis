@@ -19,13 +19,15 @@ const config = {
   "expertPrompt": "You are an expert Incident Manager. Your job is to analyze incidents, categorize them properly, and provide actionable recommendations for resolution. Focus on identifying root causes, suggesting appropriate escalation paths, and ensuring that all incident documentation follows standard procedures."
 };
 
+interface InputPageProps {}
+
 const InputPage = () => {
-  const [prompt, setPrompt] = useState('');
-  const [expertPrompt, setExpertPrompt] = useState(config.expertPrompt);
-  const [endpointUrl, setEndpointUrl] = useState('http://localhost:8000/inference');
-  const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState('');
+  const [prompt, setPrompt] = useState<string>('');
+  const [expertPrompt, setExpertPrompt] = useState<string>(config.expertPrompt);
+  const [endpointUrl, setEndpointUrl] = useState<string>('http://localhost:8000/inference');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [result, setResult] = useState<any[] | null>(null);
+  const [error, setError] = useState<string>('');
 
   const handleSubmit = async () => {
     if (!prompt.trim()) {
@@ -63,7 +65,7 @@ const InputPage = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       setResult(simulatedResponse);
-    } catch (err) {
+    } catch (err: any) {
       setError(`Failed to process request: ${err.message}`);
     } finally {
       setIsLoading(false);
@@ -195,28 +197,28 @@ const InputPage = () => {
                       Transaction Data
                     </Typography>
                     <Paper sx={{ boxShadow: 3, borderRadius: 2, width: '100%' }}>
-                      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <thead>
-                          <tr style={{ backgroundColor: '#f5f5f5' }}>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Incident Number</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Summary</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Detailed Description</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Created On</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Assigned To</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {result.map((item, index) => (
-                            <tr key={index}>
-                              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.incidentNumber || '-'}</td>
-                              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.summary || '-'}</td>
-                              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.detailedDescription || '-'}</td>
-                              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.createdOn || '-'}</td>
-                              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.assignedTo || '-'}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ backgroundColor: '#f5f5f5' }}>
+                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Incident Number</th>
+                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Summary</th>
+                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Detailed Description</th>
+                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Created On</th>
+                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Assigned To</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {result.map((item, index) => (
+                        <tr key={index}>
+                          <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.incidentNumber ? String(item.incidentNumber) : '-'}</td>
+                          <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.summary ? String(item.summary) : '-'}</td>
+                          <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.detailedDescription ? String(item.detailedDescription) : '-'}</td>
+                          <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.createdOn ? String(item.createdOn) : '-'}</td>
+                          <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.assignedTo ? String(item.assignedTo) : '-'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                     </Paper>
                   </Box>
                 )}
