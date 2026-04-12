@@ -1,143 +1,350 @@
-import { useState } from 'react'
-import './App.css'
+import { useState } from 'react';
+import { 
+  Box, 
+  Container, 
+  Typography, 
+  TextField, 
+  Button, 
+  Checkbox, 
+  FormControlLabel, 
+  Card, 
+  CardContent, 
+  CardHeader,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Badge,
+  Avatar,
+  Divider,
+  styled,
+  CssBaseline,
+  ThemeProvider,
+  createTheme
+} from '@mui/material';
+import { 
+  AccountCircle, 
+  Dashboard as DashboardIcon, 
+  Receipt as TransactionsIcon,
+  Logout as LogoutIcon,
+  Search as SearchIcon,
+  ArrowDropDown as ArrowDropDownIcon,
+  ArrowDropUp as ArrowDropUpIcon,
+  Code as CodeIcon
+} from '@mui/icons-material';
+import DashboardPage from './DashboardPage';
+import TransactionsPage from './TransactionsPage';
+import InputPage from './InputPage';
 
-function App() {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [userRole, setUserRole] = useState('')
-
-  // In a real app, this would be fetched from data.json
-  // For now, we'll keep the sample data inline
-  const users = [
-    { username: 'admin', password: 'admin123', role: 'administrator' },
-    { username: 'user', password: 'user123', role: 'regular' }
-  ]
-
-  const handleLogin = (e) => {
-    e.preventDefault()
-    
-    // Find user in our sample data
-    const foundUser = users.find(
-      u => u.username === username && u.password === password
-    )
-    
-    if (foundUser) {
-      setIsLoggedIn(true)
-      setUserRole(foundUser.role)
-      setError('')
-    } else {
-      setError('Invalid username or password')
+// Create a theme
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#003366',
+    },
+    secondary: {
+      main: '#0066cc',
+    },
+    background: {
+      default: '#f5f7fa',
+    },
+  },
+  typography: {
+    fontFamily: '"Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif',
+    h1: {
+      fontSize: '2rem',
+      fontWeight: 600,
+    },
+    h2: {
+      fontSize: '1.5rem',
+      fontWeight: 600,
+    },
+    h3: {
+      fontSize: '1.25rem',
+      fontWeight: 600,
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          borderRadius: '8px',
+          fontWeight: 500,
+        }
+      }
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: '12px',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+        }
+      }
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: '12px',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+        }
+      }
     }
   }
+});
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  marginTop: theme.spacing(8),
+  borderRadius: '12px',
+  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.12)',
+  border: '1px solid rgba(0, 0, 0, 0.08)',
+}));
+
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
+  backgroundColor: '#003366',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+}));
+
+const App = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentPage, setCurrentPage] = useState('login');
+  const [rememberMe, setRememberMe] = useState(false);
+
+  // Load login data from config.json
+  const loginData = {
+    "admin": {
+      "username": "admin",
+      "password": "admin123"
+    },
+    "users": [
+      {
+        "username": "user1",
+        "password": "user123"
+      }
+    ]
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    
+    // Clear previous errors
+    setError('');
+    
+    // Validate credentials
+    if (username.trim() === '') {
+      setError('Email address/Username is required');
+      return;
+    }
+    
+    if (password.trim() === '') {
+      setError('Password is required');
+      return;
+    }
+    
+    if (username === loginData.admin.username && password === loginData.admin.password) {
+      setIsLoggedIn(true);
+      setCurrentPage('dashboard');
+      setError('');
+    } else {
+      const user = loginData.users.find(u => u.username === username && u.password === password);
+      if (user) {
+        setIsLoggedIn(true);
+        setCurrentPage('dashboard');
+        setError('');
+      } else {
+        setError('Invalid username or password');
+      }
+    }
+  };
 
   const handleLogout = () => {
-    setIsLoggedIn(false)
-    setUsername('')
-    setPassword('')
-    setUserRole('')
-  }
+    setIsLoggedIn(false);
+    setUsername('');
+    setPassword('');
+    setCurrentPage('login');
+  };
+
+  const navigateTo = (page) => {
+    console.log('Navigating to page:', page); // Debugging line
+    setCurrentPage(page);
+  };
+
+  // Navigation component
+  const Navigation = () => (
+    <StyledAppBar position="static">
+      <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Button
+            onClick={() => navigateTo('dashboard')}
+            startIcon={<DashboardIcon />}
+            sx={{ 
+              color: 'white', 
+              fontWeight: 'medium',
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+              px: 2,
+              py: 1,
+              minWidth: '120px'
+            }}
+          >
+            Dashboard
+          </Button>
+          <Button
+            onClick={() => navigateTo('transactions')}
+            startIcon={<TransactionsIcon />}
+            sx={{ 
+              color: 'white', 
+              fontWeight: 'medium',
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+              px: 2,
+              py: 1,
+              minWidth: '120px'
+            }}
+          >
+            Transactions
+          </Button>
+          <Button
+            onClick={() => navigateTo('input')}
+            startIcon={<CodeIcon />}
+            sx={{ 
+              color: 'white', 
+              fontWeight: 'medium',
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+              px: 2,
+              py: 1,
+              minWidth: '120px'
+            }}
+          >
+            Input
+          </Button>
+          <IconButton
+            onClick={handleLogout}
+            color="inherit"
+            sx={{ 
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+              px: 1,
+              py: 1
+            }}
+          >
+            <LogoutIcon />
+          </IconButton>
+        </Box>
+      </Toolbar>
+    </StyledAppBar>
+  );
 
   if (isLoggedIn) {
     return (
-      <div className="app">
-        {/* Emirates NBD Header */}
-        <header className="navbar">
-          <div className="container">
-            <div className="navbar__inner">
-              <a href="/en" className="navbar__brand" title="Emirates NBD">
-                <img src="/-/media/enbd/images/logos/horizontal_logo.svg?la=en&amp;hash=A33654369475CF9B1FA76FEB570F9B9D" alt="Emirates NBD" />
-              </a>
-              
-              <div className="navbar__content">
-                <div className="d-flex align-items-center ml-auto">
-                  <div className="user-info">
-                    <span>Welcome, {username}</span>
-                    <span className="role-badge">{userRole}</span>
-                    <button onClick={handleLogout} className="logout-btn">Logout</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
-        
-        {/* Dashboard Content */}
-        <main className="dashboard-main">
-          <div className="welcome-card">
-            <h1>Access Granted</h1>
-            <p>You have successfully logged into the Remedy Analytics App.</p>
-            <div className="user-details">
-              <p><strong>Username:</strong> {username}</p>
-              <p><strong>Role:</strong> {userRole}</p>
-            </div>
-          </div>
-        </main>
-      </div>
-    )
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          <Navigation />
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-start', p: 2 }}>
+            <Container maxWidth="xl" sx={{ width: '100%', maxWidth: '1400px' }}>
+              {currentPage === 'dashboard' && <DashboardPage username={username} />}
+              {currentPage === 'transactions' && <TransactionsPage />}
+              {currentPage === 'input' && <InputPage />}
+            </Container>
+          </Box>
+        </Box>
+      </ThemeProvider>
+    );
   }
 
   return (
-    <div className="app">
-      {/* Emirates NBD Header */}
-      <header className="navbar">
-        <div className="container">
-          <div className="navbar__inner">
-            <a href="/en" className="navbar__brand" title="Emirates NBD">
-              <img src="/-/media/enbd/images/logos/horizontal_logo.svg?la=en&amp;hash=A33654369475CF9B1FA76FEB570F9B9D" alt="Emirates NBD" />
-            </a>
-            
-            <div className="navbar__content">
-              <div className="d-flex align-items-center ml-auto">
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-      
-      {/* Login Form */}
-      <div className="login-container">
-        <div className="login-card">
-          <div className="login-header">
-            <div className="logo">
-              <h2>Remedy Analytics App</h2>
-            </div>
-            <p>Secure Access Portal</p>
-          </div>
-          <form onSubmit={handleLogin} className="login-form">
-            <div className="form-group">
-              <label htmlFor="username">Username</label>
-              <input
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+          bgcolor: 'background.default',
+          p: 2,
+        }}
+      >
+        <StyledCard sx={{ width: '100%', maxWidth: 400 }}>
+          <CardHeader
+            title={
+              <Typography variant="h5" align="center" sx={{ fontWeight: 600, color: 'primary.main' }}>
+                Emirates NBD Remedy Analyser
+              </Typography>
+            }
+            sx={{ pb: 0 }}
+          />
+          <CardContent>
+            <Box component="form" onSubmit={handleLogin} sx={{ mt: 2 }}>
+              <TextField
+                fullWidth
+                label="Email or Username"
                 type="text"
-                id="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                required
-                placeholder="Enter your username"
+                placeholder="Enter your email or username"
+                margin="normal"
+                variant="outlined"
+                sx={{ 
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '8px'
+                  }
+                }}
               />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
+              <TextField
+                fullWidth
+                label="Password"
                 type="password"
-                id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
                 placeholder="Enter your password"
+                margin="normal"
+                variant="outlined"
+                sx={{ 
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '8px'
+                  }
+                }}
               />
-            </div>
-            {error && <p className="error">{error}</p>}
-            <button type="submit" className="login-btn">Sign In</button>
-          </form>
-          <div className="login-footer">
-            <p>© 2023 Remedy Analytics App. All rights reserved.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    color="primary"
+                  />
+                }
+                label="Remember me"
+                sx={{ mt: 1 }}
+              />
+              {error && (
+                <Box sx={{ mt: 2 }}>
+                  <Typography color="error.main" variant="body2" align="center">
+                    {error}
+                  </Typography>
+                </Box>
+              )}
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                size="large"
+                sx={{ 
+                  mt: 3, 
+                  py: 1.5, 
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  textTransform: 'none'
+                }}
+              >
+                Login
+              </Button>
+            </Box>
+          </CardContent>
+        </StyledCard>
+      </Box>
+    </ThemeProvider>
+  );
+};
 
-export default App
+export default App;

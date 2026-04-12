@@ -1,0 +1,17 @@
+{
+  "expertPrompt": "You are an expert Incident Manager. Your job is to analyze incidents, categorize them properly, and provide actionable recommendations for resolution. Focus on identifying root causes, suggesting appropriate escalation paths, and ensuring that all incident documentation follows standard procedures.",
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "admin123",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "username": "user1",
+      "password": "user123",
+      "role": "user"
+    }
+  ]
+}
