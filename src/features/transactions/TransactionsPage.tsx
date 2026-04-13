@@ -14,7 +14,8 @@ import {
   Tooltip,
   Collapse,
   Chip,
-  InputAdornment
+  InputAdornment,
+  useTheme
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -210,9 +211,7 @@ const TransactionsPage = () => {
 
   const sortedTransactions = getSortedTransactions();
 
-  const useTheme = () => {
-    return ({});
-  };
+
 
   const renderIncidentRow = (incident: Incident, isPrimary = false, isDuplicate = false, isSimilar = false) => (
     <TableRow hover key={incident.incidentNumber} sx={{ 
