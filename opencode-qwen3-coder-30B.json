@@ -9,11 +9,11 @@
         "apiKey": "sk-local-test-0000000000000000"
       },
       "models": {
-        "qwen35": {
-          "name": "Qwen 3.5 35B (Agentic)",
+        "qwen-coder": {
+          "name": "Qwen Coder (30B)",
           "limit": {
-            "context": 65536,
-            "output": 16384
+             "context": 65536,
+            "output": 12288
           }
         }
       }

@@ -14,9 +14,8 @@ import {
 } from '@mui/material';
 import { Send as SendIcon } from '@mui/icons-material';
 
-// Load config data
 const config = {
-  "expertPrompt": "You are an expert Incident Manager. Your job is to analyze incidents, categorize them properly, and provide actionable recommendations for resolution. Focus on identifying root causes, suggesting appropriate escalation paths, and ensuring that all incident documentation follows standard procedures."
+  expertPrompt: "You are an expert Incident Manager. Your job is to analyze incidents, categorize them properly, and provide actionable recommendations for resolution. Focus on identifying root causes, suggesting appropriate escalation paths, and ensuring that all incident documentation follows standard procedures."
 };
 
 interface InputPageProps {}
@@ -40,10 +39,6 @@ const InputPage = () => {
     setResult(null);
 
     try {
-      // For now, simulate a response instead of calling the external API
-      // In production, you'd want to make this work with your actual API
-      
-      // Simulated response data
       const simulatedResponse = [
         {
           incidentNumber: "INC-001",
@@ -61,7 +56,6 @@ const InputPage = () => {
         }
       ];
       
-      // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       setResult(simulatedResponse);
@@ -90,7 +84,6 @@ const InputPage = () => {
       </Box>
 
       <Grid container spacing={3} sx={{ flexGrow: 1, width: '100%', maxWidth: 800, justifyContent: 'center' }}>
-        {/* Input Section */}
         <Grid item xs={12}>
           <Card>
             <CardHeader
@@ -174,7 +167,6 @@ const InputPage = () => {
           </Card>
         </Grid>
 
-        {/* Results Section */}
         {result && (
           <Grid item xs={12}>
             <Card>
@@ -190,7 +182,6 @@ const InputPage = () => {
                   <pre>{JSON.stringify(result, null, 2)}</pre>
                 </Paper>
                 
-                {/* If result is in transactions format, display it in a table */}
                 {Array.isArray(result) && result.length > 0 && (
                   <Box sx={{ mt: 3, width: '100%' }}>
                     <Typography variant="h6" gutterBottom>
@@ -227,7 +218,6 @@ const InputPage = () => {
           </Grid>
         )}
 
-        {/* Loading State */}
         {isLoading && (
           <Grid item xs={12}>
             <Card>

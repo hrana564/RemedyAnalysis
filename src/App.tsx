@@ -33,10 +33,8 @@ import {
   ArrowDropUp as ArrowDropUpIcon,
   Code as CodeIcon
 } from '@mui/icons-material';
-import DashboardPage from './DashboardPage';
-import TransactionsPage from './TransactionsPage';
-import InputPage from './InputPage';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { DashboardPage, TransactionsPage, InputPage } from '@/index';
 
 // Create a theme
 const theme = createTheme({

@@ -9,37 +9,24 @@ import {
   useTheme,
   TextField,
   InputAdornment,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
-  Tooltip,
-  Avatar,
-  Divider,
-  Button
+  IconButton
 } from '@mui/material';
 import {
   Search as SearchIcon,
   Assignment as AssignmentIcon,
   Warning as WarningIcon,
-  QueryStats as QueryStatsIcon,
-  Info as InfoIcon,
-  Group as GroupIcon,
-  Visibility as VisibilityIcon
+  QueryStats as QueryStatsIcon
 } from '@mui/icons-material';
-import StackedBarChart from './StackedBarChart.tsx';
+import StackedBarChart from '@/components/charts/StackedBarChart';
+import { IncidentGroup } from '@/lib/types';
 
-// Load data from JSON file
-const loadTransactionsData = async () => {
+const loadIncidentsData = async () => {
   try {
-    // Try to load from public directory (static files)
     const response = await fetch('/transactions-data.json');
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error loading transactions data:', error);
-    // Return default data if JSON file fails to load
+    console.error('Error loading incidents data:', error);
     return [
       {
         primaryIncident: {
@@ -91,30 +78,6 @@ const loadTransactionsData = async () => {
   }
 };
 
-interface IncidentGroup {
-  primaryIncident: {
-    incidentNumber: string;
-    summary: string;
-    detailedDescription: string;
-    createdOn: string;
-    assignedTo: string;
-  };
-  duplicates: Array<{
-    incidentNumber: string;
-    summary: string;
-    detailedDescription: string;
-    createdOn: string;
-    assignedTo: string;
-  }>;
-  similarIncidents: Array<{
-    incidentNumber: string;
-    summary: string;
-    detailedDescription: string;
-    createdOn: string;
-    assignedTo: string;
-  }>;
-}
-
 interface DashboardPageProps {
   username: string;
 }
@@ -128,7 +91,7 @@ const DashboardPage = ({ username }: DashboardPageProps) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await loadTransactionsData();
+        const data = await loadIncidentsData();
         setIncidents(data);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -144,13 +107,11 @@ const DashboardPage = ({ username }: DashboardPageProps) => {
     setSearchTerm(event.target.value);
   };
 
-  // Calculate statistics
   const totalIncidents = incidents.length + incidents.reduce((count, group) => count + group.duplicates.length + group.similarIncidents.length, 0);
   const primaryIncidents = incidents.length;
   const duplicateIncidents = incidents.reduce((count, group) => count + group.duplicates.length, 0);
   const similarIncidents = incidents.reduce((count, group) => count + group.similarIncidents.length, 0);
 
-  // Filter incidents based on search term
   const filteredIncidents = incidents.filter(group => {
     const primaryMatch = 
       group.primaryIncident.incidentNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -180,13 +141,8 @@ const DashboardPage = ({ username }: DashboardPageProps) => {
     );
   }
 
-  const handleNodeClick = (incidentData: IncidentGroup) => {
-    // setSelectedIncident(incidentData);
-  };
-
   return (
     <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
           Incident Analysis Dashboard
@@ -196,7 +152,6 @@ const DashboardPage = ({ username }: DashboardPageProps) => {
         </Typography>
       </Box>
 
-      {/* Summary Cards */}
       <Box sx={{ display: 'flex', gap: 2, mb: 4, flexWrap: 'wrap' }}>
         <Card sx={{ minWidth: 200, flexGrow: 1 }}>
           <CardHeader
@@ -288,7 +243,6 @@ const DashboardPage = ({ username }: DashboardPageProps) => {
         </Card>
       </Box>
 
-      {/* Search Bar */}
       <Box sx={{ mb: 3, maxWidth: 400 }}>
         <TextField
           fullWidth
@@ -321,7 +275,6 @@ const DashboardPage = ({ username }: DashboardPageProps) => {
         />
       </Box>
 
-      {/* Stacked Bar Chart Section */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 2 }}>
           Incident Relationships Summary
@@ -337,8 +290,6 @@ const DashboardPage = ({ username }: DashboardPageProps) => {
           </CardContent>
         </Card>
       </Box>
-
-
     </Box>
   );
 };

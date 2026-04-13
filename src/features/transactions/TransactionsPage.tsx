@@ -14,8 +14,6 @@ import {
   Tooltip,
   Collapse,
   Chip,
-  Alert,
-  useTheme,
   InputAdornment
 } from '@mui/material';
 import {
@@ -25,17 +23,15 @@ import {
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon
 } from '@mui/icons-material';
+import { Incident, IncidentGroup } from '@/lib/types';
 
-// Load data from JSON file
-const loadTransactionsData = async () => {
+const loadIncidentsData = async () => {
   try {
-    // Try to load from public directory (static files)
     const response = await fetch('/transactions-data.json');
     const data = await response.json();
     return data;
   } catch (error) {
     console.error('Error loading transactions data:', error);
-    // Return default data if JSON file fails to load
     return [
       {
         primaryIncident: {
@@ -87,20 +83,6 @@ const loadTransactionsData = async () => {
   }
 };
 
-interface Incident {
-  incidentNumber: string;
-  summary: string;
-  detailedDescription: string;
-  createdOn: string;
-  assignedTo: string;
-}
-
-interface IncidentGroup {
-  primaryIncident: Incident;
-  duplicates: Incident[];
-  similarIncidents: Incident[];
-}
-
 interface TransactionsPageProps {}
 
 const TransactionsPage = () => {
@@ -108,21 +90,18 @@ const TransactionsPage = () => {
   const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
   const [expandedGroups, setExpandedGroups] = useState<Set<number>>(new Set());
   const [groupedTransactions, setGroupedTransactions] = useState<IncidentGroup[]>([]);
-  const theme = useTheme();
+  useTheme();
 
   useEffect(() => {
-    loadTransactionsData().then(data => {
+    loadIncidentsData().then(data => {
       setGroupedTransactions(data);
     });
   }, []);
 
-  // Handle search
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value;
-    setSearchTerm(term);
+    setSearchTerm(e.target.value);
   };
 
-  // Handle sorting
   const handleSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -131,13 +110,11 @@ const TransactionsPage = () => {
     setSortConfig({ key, direction });
   };
 
-  // Get sort indicator
   const getSortIndicator = (key: string) => {
     if (sortConfig.key !== key) return null;
     return sortConfig.direction === 'asc' ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />;
   };
 
-  // Toggle expand/collapse group
   const toggleExpandGroup = (groupIndex: number) => {
     const newExpanded = new Set(expandedGroups);
     if (newExpanded.has(groupIndex)) {
@@ -148,7 +125,6 @@ const TransactionsPage = () => {
     setExpandedGroups(newExpanded);
   };
 
-  // Filter grouped transactions based on search term
   const getFilteredTransactions = (): IncidentGroup[] => {
     if (!searchTerm) return groupedTransactions;
     
@@ -179,7 +155,6 @@ const TransactionsPage = () => {
 
   const filteredTransactions = getFilteredTransactions();
 
-  // Sort transactions
   const getSortedTransactions = (): IncidentGroup[] => {
     let sortableItems = [...filteredTransactions];
     
@@ -235,12 +210,15 @@ const TransactionsPage = () => {
 
   const sortedTransactions = getSortedTransactions();
 
-  // Render individual incident row
+  const useTheme = () => {
+    return ({});
+  };
+
   const renderIncidentRow = (incident: Incident, isPrimary = false, isDuplicate = false, isSimilar = false) => (
     <TableRow hover key={incident.incidentNumber} sx={{ 
       backgroundColor: isPrimary ? '#e8f5e9' : isDuplicate ? '#ffebee' : isSimilar ? '#fff3e0' : 'transparent',
       '&:hover': { 
-        backgroundColor: isPrimary ? '#c8e6c9' : isDuplicate ? '#ffcdd2' : isSimilar ? '#ffcc80' : theme.palette.action.hover 
+        backgroundColor: isPrimary ? '#c8e6c9' : isDuplicate ? '#ffcdd2' : isSimilar ? '#ffcc80' : 'transparent'
       }
     }}>
       <TableCell>
@@ -275,19 +253,22 @@ const TransactionsPage = () => {
           {incident.incidentNumber}
         </Box>
       </TableCell>
-      <TableCell sx={{ color: theme.palette.text.primary, fontWeight: isPrimary ? 'bold' : 'normal' }}>{incident.summary}</TableCell>
+      <TableCell>
+        <Box sx={{ fontWeight: isPrimary ? 'bold' : 'normal' }}>
+          {incident.summary}
+        </Box>
+      </TableCell>
       <TableCell>
         <Typography variant="body2" color="text.secondary" noWrap sx={{ maxWidth: 200 }}>
           {incident.detailedDescription}
         </Typography>
       </TableCell>
-      <TableCell sx={{ color: theme.palette.text.primary }}>{incident.createdOn}</TableCell>
-      <TableCell sx={{ color: theme.palette.text.primary }}>{incident.assignedTo}</TableCell>
+      <TableCell>{incident.createdOn}</TableCell>
+      <TableCell>{incident.assignedTo}</TableCell>
     </TableRow>
   );
 
-  // Render the expanded section for a group
-  const renderExpandedSection = (group: IncidentGroup, groupIndex: number) => {
+  const renderExpandedSection = (group: IncidentGroup, groupIndex: number, theme: any) => {
     const isExpanded = expandedGroups.has(groupIndex);
     
     return (
@@ -295,21 +276,21 @@ const TransactionsPage = () => {
         <TableRow>
           <TableCell colSpan={7} sx={{ p: 0, borderBottom: 'none' }}>
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-              <Box sx={{ p: 2, borderTop: '1px solid ' + theme.palette.divider, backgroundColor: theme.palette.background.default }}>
+              <Box sx={{ p: 2, borderTop: '1px solid ' + (theme?.palette?.divider || '#e0e0e0'), backgroundColor: (theme?.palette?.background?.default || '#fafafa') }}>
                 <Box sx={{ mb: 2 }}>
-                  <Typography variant="subtitle2" gutterBottom sx={{ color: theme.palette.text.primary, fontWeight: 'bold' }}>
+                  <Typography variant="subtitle2" gutterBottom sx={{ color: (theme?.palette?.text?.primary || '#000'), fontWeight: 'bold' }}>
                     Duplicates ({group.duplicates.length})
                   </Typography>
                   {group.duplicates.length > 0 ? (
-                    <Paper sx={{ mb: 2, backgroundColor: theme.palette.background.paper, width: '100%' }}>
-                      <Table size="small" sx={{ width: '100%', tableLayout: 'fixed' }}>
+                    <Paper sx={{ mb: 2, backgroundColor: (theme?.palette?.background?.paper || '#fff'), width: '100%' }}>
+                      <Table size="small" sx={{ width: '100%' }}>
                         <TableHead>
                           <TableRow>
-                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '10%' }}>Incident Number</TableCell>
-                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '15%' }}>Summary</TableCell>
-                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '20%' }}>Description</TableCell>
-                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '10%' }}>Created On</TableCell>
-                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '10%' }}>Assigned To</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '10%' }}>Incident Number</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Summary</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>Description</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '10%' }}>Created On</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '10%' }}>Assigned To</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -325,19 +306,19 @@ const TransactionsPage = () => {
                 </Box>
                 
                 <Box>
-                  <Typography variant="subtitle2" gutterBottom sx={{ color: theme.palette.text.primary, fontWeight: 'bold' }}>
+                  <Typography variant="subtitle2" gutterBottom sx={{ color: (theme?.palette?.text?.primary || '#000'), fontWeight: 'bold' }}>
                     Similar Incidents ({group.similarIncidents.length})
                   </Typography>
                   {group.similarIncidents.length > 0 ? (
-                    <Paper sx={{ backgroundColor: theme.palette.background.paper, width: '100%' }}>
-                      <Table size="small" sx={{ width: '100%', tableLayout: 'fixed' }}>
+                    <Paper sx={{ backgroundColor: (theme?.palette?.background?.paper || '#fff'), width: '100%' }}>
+                      <Table size="small" sx={{ width: '100%' }}>
                         <TableHead>
                           <TableRow>
-                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '10%' }}>Incident Number</TableCell>
-                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '15%' }}>Summary</TableCell>
-                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '20%' }}>Description</TableCell>
-                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '10%' }}>Created On</TableCell>
-                            <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold', width: '10%' }}>Assigned To</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '10%' }}>Incident Number</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Summary</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>Description</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '10%' }}>Created On</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold', width: '10%' }}>Assigned To</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -362,7 +343,7 @@ const TransactionsPage = () => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{ color: theme.palette.text.primary, fontWeight: 600 }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 600 }}>
           Incident Management
         </Typography>
         <Typography variant="subtitle1" color="text.secondary">
@@ -370,7 +351,6 @@ const TransactionsPage = () => {
         </Typography>
       </Box>
 
-      {/* Search Bar */}
       <Box sx={{ mb: 4, maxWidth: 400 }}>
         <TextField
           fullWidth
@@ -382,7 +362,7 @@ const TransactionsPage = () => {
             startAdornment: (
               <InputAdornment position="start">
                 <Tooltip title="Search incidents">
-                  <IconButton edge="start" sx={{ mr: 1, color: theme.palette.text.primary }}>
+                  <IconButton edge="start" sx={{ mr: 1 }}>
                     <SearchIcon />
                   </IconButton>
                 </Tooltip>
@@ -392,93 +372,85 @@ const TransactionsPage = () => {
           sx={{ 
             '& .MuiOutlinedInput-root': {
               borderRadius: '8px',
-              backgroundColor: theme.palette.background.paper
+              backgroundColor: 'white'
             },
             '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: theme.palette.divider
+              borderColor: '#e0e0e0'
             },
             '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: theme.palette.primary.main
+              borderColor: '#003366'
             },
             '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: theme.palette.primary.main
+              borderColor: '#003366'
             }
           }}
         />
       </Box>
 
-      {/* Transactions Table */}
       <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-        <Paper sx={{ boxShadow: 3, borderRadius: 2, width: '100%', backgroundColor: theme.palette.background.paper, border: '1px solid ' + theme.palette.divider }}>
+        <Paper sx={{ boxShadow: 3, borderRadius: 2, width: '100%', backgroundColor: 'white', border: '1px solid #e0e0e0' }}>
           <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ width: '10%', color: theme.palette.text.primary, fontWeight: 'bold', backgroundColor: theme.palette.background.default }}>
+              <TableCell sx={{ width: '10%', fontWeight: 'bold', backgroundColor: '#fafafa' }}>
                 <TableSortLabel
                   active={sortConfig.key === 'incidentNumber'}
                   direction={sortConfig.key === 'incidentNumber' ? sortConfig.direction : 'asc'}
                   onClick={() => handleSort('incidentNumber')}
-                  sx={{ color: theme.palette.text.primary }}
                 >
                   Incident Number {getSortIndicator('incidentNumber')}
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ width: '15%', color: theme.palette.text.primary, fontWeight: 'bold', backgroundColor: theme.palette.background.default }}>
+              <TableCell sx={{ width: '15%', fontWeight: 'bold', backgroundColor: '#fafafa' }}>
                 <TableSortLabel
                   active={sortConfig.key === 'summary'}
                   direction={sortConfig.key === 'summary' ? sortConfig.direction : 'asc'}
                   onClick={() => handleSort('summary')}
-                  sx={{ color: theme.palette.text.primary }}
                 >
                   Summary {getSortIndicator('summary')}
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ width: '20%', color: theme.palette.text.primary, fontWeight: 'bold', backgroundColor: theme.palette.background.default }}>
+              <TableCell sx={{ width: '20%', fontWeight: 'bold', backgroundColor: '#fafafa' }}>
                 <TableSortLabel
                   active={sortConfig.key === 'detailedDescription'}
                   direction={sortConfig.key === 'detailedDescription' ? sortConfig.direction : 'asc'}
                   onClick={() => handleSort('detailedDescription')}
-                  sx={{ color: theme.palette.text.primary }}
                 >
                   Description {getSortIndicator('detailedDescription')}
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ width: '10%', color: theme.palette.text.primary, fontWeight: 'bold', backgroundColor: theme.palette.background.default }}>
+              <TableCell sx={{ width: '10%', fontWeight: 'bold', backgroundColor: '#fafafa' }}>
                 <TableSortLabel
                   active={sortConfig.key === 'createdOn'}
                   direction={sortConfig.key === 'createdOn' ? sortConfig.direction : 'asc'}
                   onClick={() => handleSort('createdOn')}
-                  sx={{ color: theme.palette.text.primary }}
                 >
                   Created On {getSortIndicator('createdOn')}
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ width: '10%', color: theme.palette.text.primary, fontWeight: 'bold', backgroundColor: theme.palette.background.default }}>
+              <TableCell sx={{ width: '10%', fontWeight: 'bold', backgroundColor: '#fafafa' }}>
                 <TableSortLabel
                   active={sortConfig.key === 'assignedTo'}
                   direction={sortConfig.key === 'assignedTo' ? sortConfig.direction : 'asc'}
                   onClick={() => handleSort('assignedTo')}
-                  sx={{ color: theme.palette.text.primary }}
                 >
                   Assigned To {getSortIndicator('assignedTo')}
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ width: '10%', color: theme.palette.text.primary, fontWeight: 'bold', backgroundColor: theme.palette.background.default }}>
+              <TableCell sx={{ width: '10%', fontWeight: 'bold', backgroundColor: '#fafafa' }}>
                 <TableSortLabel
                   active={sortConfig.key === 'duplicatesCount'}
                   direction={sortConfig.key === 'duplicatesCount' ? sortConfig.direction : 'asc'}
                   onClick={() => handleSort('duplicatesCount')}
-                  sx={{ color: theme.palette.text.primary }}
                 >
                   Duplicates {getSortIndicator('duplicatesCount')}
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ width: '15%', color: theme.palette.text.primary, fontWeight: 'bold', backgroundColor: theme.palette.background.default }}>
+              <TableCell sx={{ width: '15%', fontWeight: 'bold', backgroundColor: '#fafafa' }}>
                 <TableSortLabel
                   active={sortConfig.key === 'similarCount'}
                   direction={sortConfig.key === 'similarCount' ? sortConfig.direction : 'asc'}
                   onClick={() => handleSort('similarCount')}
-                  sx={{ color: theme.palette.text.primary }}
                 >
                   Similar Incidents {getSortIndicator('similarCount')}
                 </TableSortLabel>
@@ -489,19 +461,18 @@ const TransactionsPage = () => {
               {sortedTransactions.length > 0 ? (
                 sortedTransactions.map((group, groupIndex) => (
                   <React.Fragment key={group.primaryIncident.incidentNumber}>
-                    {/* Primary Incident Row */}
                     <TableRow 
                       hover 
                       sx={{ 
                         cursor: 'pointer',
-                        backgroundColor: theme.palette.background.default,
-                        '&:hover': { backgroundColor: theme.palette.action.hover }
+                        backgroundColor: 'white',
+                        '&:hover': { backgroundColor: '#f5f5f5' }
                       }}
                       onClick={() => toggleExpandGroup(groupIndex)}
                     >
                       <TableCell>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <IconButton size="small" sx={{ color: theme.palette.text.primary }}>
+                          <IconButton size="small">
                             {expandedGroups.has(groupIndex) ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                           </IconButton>
                           <Chip 
@@ -513,26 +484,25 @@ const TransactionsPage = () => {
                               fontWeight: 'bold', 
                               borderColor: '#4caf50', 
                               color: '#4caf50',
-                              backgroundColor: theme.palette.background.default
+                              backgroundColor: 'white'
                             }}
                           />
                           {group.primaryIncident.incidentNumber}
                         </Box>
                       </TableCell>
-                      <TableCell sx={{ color: theme.palette.text.primary, fontWeight: 'bold' }}>{group.primaryIncident.summary}</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }}>{group.primaryIncident.summary}</TableCell>
                       <TableCell>
                         <Typography variant="body2" color="text.secondary" noWrap sx={{ maxWidth: 200 }}>
                           {group.primaryIncident.detailedDescription}
                         </Typography>
                       </TableCell>
-                      <TableCell sx={{ color: theme.palette.text.primary }}>{group.primaryIncident.createdOn}</TableCell>
-                      <TableCell sx={{ color: theme.palette.text.primary }}>{group.primaryIncident.assignedTo}</TableCell>
-                      <TableCell sx={{ color: theme.palette.text.primary }}>{group.duplicates.length}</TableCell>
-                      <TableCell sx={{ color: theme.palette.text.primary }}>{group.similarIncidents.length}</TableCell>
+                      <TableCell>{group.primaryIncident.createdOn}</TableCell>
+                      <TableCell>{group.primaryIncident.assignedTo}</TableCell>
+                      <TableCell>{group.duplicates.length}</TableCell>
+                      <TableCell>{group.similarIncidents.length}</TableCell>
                     </TableRow>
                     
-                    {/* Expanded Details */}
-                    {renderExpandedSection(group, groupIndex)}
+                    {renderExpandedSection(group, groupIndex, {})}
                   </React.Fragment>
                 ))
               ) : (

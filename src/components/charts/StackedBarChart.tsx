@@ -9,23 +9,10 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
-
-interface IncidentGroup {
-  primaryIncident: {
-    incidentNumber: string;
-  };
-  duplicates: Array<any>;
-  similarIncidents: Array<any>;
-}
-
-interface ChartDataItem {
-  name: string;
-  duplicates: number;
-  similar: number;
-}
+import { IncidentGroup } from '@/lib/types';
+import { ChartDataItem } from '@/lib/types';
 
 const StackedBarChart: React.FC<{ incidents: IncidentGroup[] }> = ({ incidents }) => {
-  // Process data to create stacked bar chart data
   const chartData: ChartDataItem[] = incidents
     .map(group => {
       const primaryIncident = group.primaryIncident;
@@ -38,10 +25,9 @@ const StackedBarChart: React.FC<{ incidents: IncidentGroup[] }> = ({ incidents }
         similar: similarCount
       };
     })
-    .sort((a, b) => (a.duplicates + a.similar) - (b.duplicates + b.similar)) // Sort by total count
-    .reverse(); // Highest to lowest
+    .sort((a, b) => (a.duplicates + a.similar) - (b.duplicates + b.similar))
+    .reverse();
 
-  // Handle case where chart data might be empty
   if (chartData.length === 0) {
     return (
       <div style={{ width: '100%', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
