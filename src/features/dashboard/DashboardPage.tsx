@@ -284,9 +284,7 @@ const DashboardPage = ({ username }: DashboardPageProps) => {
         </Typography>
         <Card>
           <CardContent>
-            <Box sx={{ height: 400 }}>
-              <StackedBarChart incidents={filteredIncidents} />
-            </Box>
+            <StackedBarChart incidents={filteredIncidents} />
           </CardContent>
         </Card>
       </Box>

@@ -11,11 +11,9 @@ import {
   Paper,
   TableSortLabel,
   IconButton,
-  Tooltip,
   Collapse,
   Chip,
-  InputAdornment,
-  useTheme
+  InputAdornment
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -91,7 +89,6 @@ const TransactionsPage = () => {
   const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
   const [expandedGroups, setExpandedGroups] = useState<Set<number>>(new Set());
   const [groupedTransactions, setGroupedTransactions] = useState<IncidentGroup[]>([]);
-  useTheme();
 
   useEffect(() => {
     loadIncidentsData().then(data => {
@@ -352,6 +349,7 @@ const TransactionsPage = () => {
 
       <Box sx={{ mb: 4, maxWidth: 400 }}>
         <TextField
+          key="transactions-search"
           fullWidth
           variant="outlined"
           placeholder="Search incidents..."
@@ -360,11 +358,9 @@ const TransactionsPage = () => {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <Tooltip title="Search incidents">
-                  <IconButton edge="start" sx={{ mr: 1 }}>
-                    <SearchIcon />
-                  </IconButton>
-                </Tooltip>
+                <IconButton edge="start" sx={{ mr: 1 }}>
+                  <SearchIcon />
+                </IconButton>
               </InputAdornment>
             ),
           }}

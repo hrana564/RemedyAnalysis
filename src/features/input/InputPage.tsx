@@ -84,7 +84,7 @@ const InputPage = () => {
       </Box>
 
       <Grid container spacing={3} sx={{ flexGrow: 1, width: '100%', maxWidth: 800, justifyContent: 'center' }}>
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <Card>
             <CardHeader
               title={
@@ -168,7 +168,7 @@ const InputPage = () => {
         </Grid>
 
         {result && (
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Card>
               <CardHeader
                 title={
@@ -219,7 +219,7 @@ const InputPage = () => {
         )}
 
         {isLoading && (
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Card>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3, width: '100%' }}>
