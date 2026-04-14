@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emirates NBD Remedy Analyzer - PPT Presentation</title>
     <style>
+        :root {
+            --slide-title: 50px;
+            --section-title: 26px;
+            --body-text: 22px;
+            --small-text: 16px;
+            --metric-big: 44px;
+            --metric-med: 32px;
+            --metric-small: 26px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -28,6 +38,42 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transform-origin: center center;
+        }
+
+        @media (max-width: 1960px) {
+            .presentation-container {
+                width: calc(1920px * 0.9);
+                height: calc(1080px * 0.9);
+            }
+        }
+
+        @media (max-width: 1800px) {
+            .presentation-container {
+                width: calc(1920px * 0.85);
+                height: calc(1080px * 0.85);
+            }
+        }
+
+        @media (max-width: 1600px) {
+            .presentation-container {
+                width: calc(1920px * 0.8);
+                height: calc(1080px * 0.8);
+            }
+        }
+
+        @media (max-width: 1400px) {
+            .presentation-container {
+                width: calc(1920px * 0.7);
+                height: calc(1080px * 0.7);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .presentation-container {
+                width: calc(1920px * 0.6);
+                height: calc(1080px * 0.6);
+            }
         }
 
         .slide {
@@ -37,7 +83,7 @@
             opacity: 0;
             transition: opacity 0.6s ease, transform 0.6s ease;
             transform: scale(0.95);
-            padding: 60px;
+            padding: 50px 40px;
             display: flex;
             flex-direction: column;
         }
@@ -50,43 +96,51 @@
 
         .slide-number {
             position: absolute;
-            top: 40px;
-            right: 60px;
+            top: 35px;
+            right: 50px;
             background: linear-gradient(135deg, #003366 0%, #0066cc 100%);
-            padding: 12px 32px;
+            padding: 10px 28px;
             border-radius: 50px;
             color: white;
-            font-size: 20px;
+            font-size: var(--small-text);
             font-weight: 600;
         }
 
         .slide-header {
-            margin-top: 60px;
+            margin-top: 35px;
             border-bottom: 3px solid #003366;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
         }
 
         .slide-header h1 {
             color: #003366;
-            font-size: 48px;
+            font-size: var(--slide-title);
             font-weight: 700;
         }
 
         .slide-footer {
             position: absolute;
-            bottom: 30px;
-            left: 60px;
-            right: 60px;
+            bottom: 15px;
+            left: 40px;
+            right: 40px;
             text-align: center;
             color: #666;
-            font-size: 16px;
+            font-size: var(--small-text);
             border-top: 1px solid #e0e0e0;
-            padding-top: 15px;
+            padding-top: 10px;
         }
 
-        /* Slide 1 - Title */
         .title-slide {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .title-content {
+            flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -97,7 +151,7 @@
         }
 
         .title-logo {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -105,49 +159,57 @@
         }
 
         .title-logo img {
-            max-height: 260px;
-            max-width: 950px;
+            max-height: 240px;
+            max-width: 880px;
             display: block;
         }
 
         .main-title {
-            font-size: 72px;
+            font-size: 64px;
             color: #003366;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             line-height: 1.2;
         }
 
         .subtitle {
-            font-size: 36px;
+            font-size: 32px;
             color: #666;
-            margin-bottom: 60px;
+            margin-bottom: 50px;
             font-weight: 400;
         }
 
         .description {
-            font-size: 28px;
+            font-size: 24px;
             color: #444;
-            max-width: 900px;
+            max-width: 850px;
             margin: 0 auto;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
-        /* Slide 2 - Problem Statements */
         .problem-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 0px;
         }
 
         .problem-card {
             background: white;
-            border-left: 6px solid #003366;
-            padding: 35px;
-            border-radius: 12px;
+            border-left: 5px solid #003366;
+            padding: 20px 18px;
+            border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             border: 1px solid #e5e7eb;
+        }
+
+        .problem-card h3 {
+            margin-bottom: 8px;
+        }
+
+        .problem-card p {
+            margin: 0;
+            line-height: 1.4;
         }
 
         .problem-card.wide {
@@ -156,41 +218,32 @@
             border-left-color: #003366;
         }
 
-        .problem-card h3 {
+        .problem-card h3, .problem-card.wide h3 {
             color: #003366;
-            font-size: 28px;
-            margin-bottom: 15px;
+            font-size: var(--section-title);
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
-        .problem-card.wide h3 {
-            color: #003366;
-        }
-
-        .problem-card p {
+        .problem-card p, .problem-card.wide p {
             color: #374151;
-            font-size: 22px;
-            line-height: 1.6;
+            font-size: var(--body-text);
+            line-height: 1.5;
         }
 
-        .problem-card.wide p {
-            color: #374151;
-        }
-
-        /* Slide 3 - Results & Metrics */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 25px;
-            margin-bottom: 50px;
+            gap: 20px;
+            margin-bottom: 40px;
         }
 
         .metric-card {
             background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            padding: 30px 25px;
-            border-radius: 12px;
+            padding: 25px 20px;
+            border-radius: 10px;
             text-align: center;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             border: 1px solid #dbeafe;
@@ -198,59 +251,58 @@
 
         .metric-card h4 {
             color: #003366;
-            font-size: 18px;
-            margin-bottom: 10px;
+            font-size: var(--small-text);
+            margin-bottom: 8px;
             font-weight: 600;
         }
 
         .metric-value {
-            font-size: 56px;
+            font-size: var(--metric-big);
             font-weight: 700;
             color: #003366;
             line-height: 1;
         }
 
         .metric-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
+            font-size: 42px;
+            margin-bottom: 8px;
         }
 
         .metric-unit {
-            font-size: 24px;
+            font-size: var(--metric-small);
             font-weight: 500;
         }
 
         .metric-label {
-            font-size: 18px;
+            font-size: var(--small-text);
             color: #64748b;
-            margin-top: 8px;
+            margin-top: 6px;
         }
 
         .code-block {
             background: #f8fafc;
             border: 2px solid #e5e7eb;
-            padding: 30px;
-            border-radius: 12px;
-            border-left: 6px solid #003366;
+            padding: 25px 20px;
+            border-radius: 10px;
+            border-left: 5px solid #003366;
             font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 16px;
-            line-height: 1.8;
+            font-size: var(--body-text);
+            line-height: 1.6;
             color: #1e293b;
         }
 
         .code-block h4 {
             color: #003366;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             font-family: 'Segoe UI', sans-serif;
-            font-size: 20px;
+            font-size: var(--section-title);
         }
 
-        /* Slide 4 - How It Works */
         .workflow-timeline {
             display: flex;
             align-items: stretch;
             gap: 0;
-            margin-bottom: 40px;
+            margin-bottom: 35px;
         }
 
         .workflow-step {
@@ -261,10 +313,10 @@
         .workflow-step:not(:last-child)::after {
             content: "→";
             position: absolute;
-            right: -20px;
+            right: -15px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 48px;
+            font-size: 40px;
             color: #003366;
             z-index: 1;
         }
@@ -272,52 +324,51 @@
         .step-content {
             background: white;
             border: 3px solid #003366;
-            border-radius: 12px;
-            padding: 25px;
+            border-radius: 10px;
+            padding: 22px;
             height: 100%;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .step-number {
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, #003366 0%, #0066cc 100%);
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .step-content h4 {
             color: #003366;
-            font-size: 24px;
-            margin-bottom: 12px;
+            font-size: var(--section-title);
+            margin-bottom: 10px;
         }
 
         .step-content p {
             color: #64748b;
-            font-size: 18px;
-            line-height: 1.5;
+            font-size: var(--body-text);
+            line-height: 1.4;
         }
 
-        /* Slide 5 - Benefits */
         .benefits-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
             margin-bottom: 30px;
         }
 
         .two-sections {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 40px;
-            height: 380px;
+            gap: 18px;
+            margin-bottom: 35px;
+            height: 350px;
         }
 
         .two-sections > div {
@@ -337,55 +388,55 @@
             flex: 1;
             overflow-y: auto;
             margin: 0;
-            padding-left: 20px;
+            padding-left: 18px;
         }
 
         .two-sections .section-card > ul li {
-            font-size: 13px;
+            font-size: var(--body-text);
             color: #1e293b;
-            line-height: 1.5;
-            margin-bottom: 6px;
+            line-height: 1.4;
+            margin-bottom: 5px;
         }
 
         .section-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid #e5e7eb;
-            padding: 16px;
+            padding: 14px;
         }
 
         .section-card ul {
             margin: 0;
-            padding-left: 20px;
+            padding-left: 18px;
         }
 
         .section-card li {
-            font-size: 14px;
+            font-size: var(--body-text);
             color: #1e293b;
-            line-height: 1.5;
-            margin-bottom: 6px;
+            line-height: 1.4;
+            margin-bottom: 5px;
         }
 
         .two-sections .metrics-grid {
             display: grid !important;
             grid-template-columns: 1fr 1fr !important;
-            gap: 12px !important;
-            margin-top: 12px !important;
+            gap: 10px !important;
+            margin-top: 10px !important;
         }
 
         .two-sections .metric-box {
             background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%) !important;
-            padding: 12px 10px !important;
+            padding: 10px 8px !important;
             border-radius: 8px !important;
             text-align: center !important;
             border: 1px solid #86efac !important;
         }
 
         .two-sections .metric-value {
-            font-size: 24px !important;
+            font-size: 22px !important;
             font-weight: 700 !important;
             color: #166534 !important;
-            margin-bottom: 4px !important;
+            margin-bottom: 3px !important;
             line-height: 1.2 !important;
         }
 
@@ -396,8 +447,8 @@
         }
 
         .section-card h4 {
-            font-size: 18px;
-            margin-bottom: 12px;
+            font-size: var(--section-title);
+            margin-bottom: 10px;
             color: #003366;
             display: flex;
             align-items: center;
@@ -406,15 +457,15 @@
 
         .benefit-card {
             background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 6px solid #16a34a;
+            padding: 18px;
+            border-radius: 10px;
+            border-left: 5px solid #16a34a;
         }
 
         .benefit-card h4 {
             color: #166534;
-            font-size: 18px;
-            margin-bottom: 12px;
+            font-size: var(--section-title);
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -422,21 +473,21 @@
 
         .benefit-card p {
             color: #15803d;
-            font-size: 16px;
-            line-height: 1.5;
+            font-size: var(--body-text);
+            line-height: 1.4;
         }
 
         .benefit-card small {
-            font-size: 13px;
+            font-size: var(--small-text);
             color: #64748b;
         }
 
         .segment-duplicate {
             background: #ef4444;
             color: white;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 4px;
-            font-size: 11px;
+            font-size: var(--small-text);
             font-weight: 600;
             display: inline-block;
         }
@@ -444,9 +495,9 @@
         .segment-similar {
             background: #f97316;
             color: white;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 4px;
-            font-size: 11px;
+            font-size: var(--small-text);
             font-weight: 600;
             display: inline-block;
         }
@@ -454,14 +505,14 @@
         .impact-metrics {
             background: white;
             border: 2px solid #e5e7eb;
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
         }
 
         .impact-row {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            padding: 25px;
+            padding: 22px;
             border-bottom: 1px solid #e5e7eb;
             align-items: center;
         }
@@ -471,7 +522,7 @@
         }
 
         .impact-metric {
-            font-size: 42px;
+            font-size: 36px;
             font-weight: 700;
             color: #003366;
             text-align: center;
@@ -479,47 +530,46 @@
 
         .impact-label {
             color: #6b7280;
-            font-size: 20px;
+            font-size: var(--body-text);
             font-weight: 600;
             text-align: center;
         }
 
         .impact-description {
             color: #9ca3af;
-            font-size: 18px;
+            font-size: var(--body-text);
             text-align: center;
         }
 
         .impact-impact {
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
             color: #92400e;
-            padding: 15px 25px;
+            padding: 12px 22px;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 18px;
+            font-size: var(--section-title);
             text-align: center;
         }
 
-        /* Navigation */
         .nav-controls {
             position: absolute;
-            bottom: 40px;
+            bottom: 35px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 25px;
+            gap: 22px;
             z-index: 100;
         }
 
         .nav-btn {
-            width: 65px;
-            height: 65px;
+            width: 60px;
+            height: 60px;
             border: none;
             background: linear-gradient(135deg, #003366 0%, #0066cc 100%);
             color: white;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 24px;
+            font-size: 22px;
             transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
             align-items: center;
@@ -541,16 +591,16 @@
 
         .progress-dots {
             position: absolute;
-            bottom: 120px;
-            right: 60px;
+            bottom: 110px;
+            right: 50px;
             display: flex;
-            gap: 15px;
+            gap: 13px;
             z-index: 100;
         }
 
         .progress-dot {
-            width: 14px;
-            height: 14px;
+            width: 13px;
+            height: 13px;
             border-radius: 50%;
             background: #d1d5db;
             transition: all 0.3s;
@@ -565,7 +615,6 @@
 </head>
 <body>
     <div class="presentation-container">
-        <!-- Slide 1: Title Slide -->
         <div class="slide title-slide active" id="slide-0">
             <div class="title-content">
                 <div class="title-logo">
@@ -584,7 +633,6 @@
             <div class="slide-number">1</div>
         </div>
 
-        <!-- Slide 2: Problem Statements -->
         <div class="slide" id="slide-1">
             <div class="slide-header">
                 <h1>Current Problem Statements</h1>
@@ -606,9 +654,17 @@
                     <h3>🎫 Problem #4: Problem Ticket Creation</h3>
                     <p>High-repeating issues are not intelligently identified, delaying root cause analysis and preventing proactive problem management from recurring incidents.</p>
                 </div>
+                <div class="problem-card">
+                    <h3>🔗 Problem #5: Knowledge Silos</h3>
+                    <p>When similar incidents go to different engineers, valuable solutions and fixes stay isolated. Each engineer reinvents the wheel instead of building on collective wisdom, slowing down the entire team.</p>
+                </div>
+                <div class="problem-card">
+                    <h3>📈 Problem #6: Metrics Inaccuracy</h3>
+                    <p>Management metrics on team performance and resolution efficiency are skewed by duplicate work, making it difficult to assess true productivity and resource allocation.</p>
+                </div>
                 <div class="problem-card wide">
                     <h3>⚠️ Overall Impact</h3>
-                    <p>Current workflow results in wasted engineer effort, duplicated work, delayed resolutions, and no mechanism for identifying and escalating root cause problems in Remedy.</p>
+                    <p>Current workflow results in wasted engineer effort, duplicated work, delayed resolutions, inaccurate performance metrics, and no systematic approach to identifying and addressing root cause problems in Remedy.</p>
                 </div>
             </div>
             <div class="slide-footer">
@@ -617,7 +673,6 @@
             <div class="slide-number">2</div>
         </div>
 
-        <!-- Slide 3: How It Works -->
         <div class="slide" id="slide-2">
             <div class="slide-header">
                 <h1>How It Works: Application Flow</h1>
@@ -655,44 +710,44 @@
 
             <div class="two-sections">
                 <div class="section-card">
-                    <h4 style="color: #003366; font-size: 18px; margin-bottom: 10px;">🧠 AI-Powered Analysis</h4>
+                    <h4 style="color: #003366; font-size: var(--section-title); margin-bottom: 10px;">🧠 AI-Powered Analysis</h4>
                     <ul>
-                        <li style="font-size: 16px;"><strong>Vector Embeddings:</strong> Captures semantic meaning</li>
-                        <li style="font-size: 16px;"><strong>Hybrid Scoring:</strong> 70% semantic + 25% text + 5% category</li>
-                        <li style="font-size: 16px;"><strong>Auto-Classification:</strong> Confidence-based detection</li>
-                        <li style="font-size: 16px;"><strong>IncidentGroups:</strong> Primary + duplicates + similar</li>
-                        <li style="font-size: 16px;"><strong>No Manual Review:</strong> Full audit trail</li>
+                        <li style="font-size: var(--body-text);"><strong>Vector Embeddings:</strong> Captures semantic meaning</li>
+                        <li style="font-size: var(--body-text);"><strong>Hybrid Scoring:</strong> 70% semantic + 25% text + 5% category</li>
+                        <li style="font-size: var(--body-text);"><strong>Auto-Classification:</strong> Confidence-based detection</li>
+                        <li style="font-size: var(--body-text);"><strong>IncidentGroups:</strong> Primary + duplicates + similar</li>
+                        <li style="font-size: var(--body-text);"><strong>No Manual Review:</strong> Full audit trail</li>
                     </ul>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; flex-direction: column; gap: 10px;">
                     <div class="section-card" style="flex: 1;">
-                        <h4 style="color: #9a3412; font-size: 18px; margin-bottom: 10px;">📊 Similarity Thresholds</h4>
-                        <div style="border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; font-size: 16px;">
-                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); background: #f8fafc; padding: 8px 10px; font-weight: 600; color: #9a3412; font-size: 15px;">
+                        <h4 style="color: #9a3412; font-size: var(--section-title); margin-bottom: 10px;">📊 Similarity Thresholds</h4>
+                        <div style="border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; font-size: var(--body-text); min-height: 100px;">
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); background: #f8fafc; padding: 12px 10px; font-weight: 600; color: #9a3412; font-size: var(--small-text); align-items: center;">
                                 <div>Duplicate</div>
                                 <div>High Similar</div>
                                 <div>Similar</div>
                                 <div>Action</div>
                             </div>
-                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px; font-size: 15px; align-items: center;">
-                                <div><span class="segment-duplicate" style="font-size: 13px; padding: 3px 6px;">≥90%</span></div>
-                                <div><span class="segment-duplicate" style="font-size: 13px; padding: 3px 6px;">85-90%</span></div>
-                                <div><span class="segment-similar" style="font-size: 13px; padding: 3px 6px;">70-84%</span></div>
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); padding: 14px 10px; font-size: var(--small-text); align-items: center; gap: 8px;">
+                                <div><span class="segment-duplicate" style="font-size: var(--small-text); padding: 6px 8px; display: inline-block;">≥90%</span></div>
+                                <div><span class="segment-duplicate" style="font-size: var(--small-text); padding: 6px 8px; display: inline-block;">85-90%</span></div>
+                                <div><span class="segment-similar" style="font-size: var(--small-text); padding: 6px 8px; display: inline-block;">70-84%</span></div>
                                 <div style="color: #64748b;">Auto/Suggest</div>
                             </div>
                         </div>
-                        <p style="font-size: 14px; color: #64748b; margin: 8px 0 0 0;"><strong>POC:</strong> 0.90 (configurable)</p>
+                        <p style="font-size: var(--small-text); color: #64748b; margin: 15px 0 0 0;"><strong>POC:</strong> 0.90 (configurable)</p>
                     </div>
                     <div class="section-card" style="flex: 1;">
-                        <h4 style="color: #166534; font-size: 18px; margin-bottom: 10px;">⚡ Performance</h4>
-                        <div style="border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; font-size: 16px;">
-                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); background: #f8fafc; padding: 8px 10px; font-weight: 600; color: #166534; font-size: 15px;">
+                        <h4 style="color: #166534; font-size: var(--section-title); margin-bottom: 10px;">⚡ Performance</h4>
+                        <div style="border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; font-size: var(--body-text);">
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); background: #f8fafc; padding: 8px 10px; font-weight: 600; color: #166534; font-size: var(--small-text);">
                                 <div>Time</div>
                                 <div>Accuracy</div>
                                 <div>Scale</div>
                                 <div>Config</div>
                             </div>
-                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px; font-size: 15px; font-weight: 700; color: #166534; align-items: center;">
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px; font-size: var(--body-text); font-weight: 700; color: #166534; align-items: center;">
                                 <div>~1-2s</div>
                                 <div>85-90%</div>
                                 <div>1K-10K</div>
@@ -711,7 +766,6 @@
             <div class="slide-number">3</div>
         </div>
 
-        <!-- Slide 4: Benefits -->
         <div class="slide" id="slide-3">
             <div class="slide-header">
                 <h1>Benefits & Impact</h1>
@@ -743,9 +797,9 @@
                 </div>
             </div>
 
-            <div style="margin-top: 40px; text-align: center; padding: 30px; background: #fff7ed; border-radius: 12px; border-left: 6px solid #ea580c;">
-                <h5 style="color: #9a3412; font-size: 24px; margin-bottom: 15px;">🚀 Next Steps</h5>
-                <p style="color: #9a3412; font-size: 18px;">
+            <div style="margin-top: 35px; text-align: center; padding: 25px; background: #fff7ed; border-radius: 10px; border-left: 5px solid #ea580c;">
+                <h5 style="color: #9a3412; font-size: 22px; margin-bottom: 12px;">🚀 Next Steps</h5>
+                <p style="color: #9a3412; font-size: var(--body-text);">
                     Connect to production Remedy API, deploy LLM endpoint in production, integrate with incident management workflow
                 </p>
             </div>
@@ -755,13 +809,11 @@
             <div class="slide-number">4</div>
         </div>
 
-        <!-- Navigation Controls -->
         <div class="nav-controls">
             <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">&#8592;</button>
             <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">&#8594;</button>
         </div>
 
-        <!-- Progress Indicator -->
         <div class="progress-dots">
             <div class="progress-dot active" onclick="goToSlide(0)"></div>
             <div class="progress-dot" onclick="goToSlide(1)"></div>
