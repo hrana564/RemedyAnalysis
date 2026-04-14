@@ -601,52 +601,8 @@
             <div class="slide-number">2</div>
         </div>
 
-        <!-- Slide 3: Results & Metrics -->
+        <!-- Slide 3: How It Works -->
         <div class="slide" id="slide-2">
-            <div class="slide-header">
-                <h1>Results & Metrics</h1>
-            </div>
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-icon">📊</div>
-                    <h4>Total Incidents Analyzed</h4>
-                    <div class="metric-value">150<span class="metric-unit">/day</span></div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-icon">✅</div>
-                    <h4>Primary Incidents</h4>
-                    <div class="metric-value">80</div>
-                    <div class="metric-label">Unique Issues (53.3%)</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-icon">🔄</div>
-                    <h4>Duplicates Found</h4>
-                    <div class="metric-value">20</div>
-                    <div class="metric-label">Exact Duplicates (13.3%)</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-icon">🔍</div>
-                    <h4>Similar Incidents</h4>
-                    <div class="metric-value">50</div>
-                    <div class="metric-label">Similar Issues (33.3%)</div>
-                </div>
-            </div>
-            <div class="code-block">
-                <h4>📋 IncidentGroup Data Structure</h4>
-                <pre><code>interface IncidentGroup {
-  primaryIncident: Incident;      // Main incident
-  duplicates: Incident[];         // Exact duplicates  
-  similarIncidents: Incident[];   // Similar but not identical
-}</code></pre>
-            </div>
-            <div class="slide-footer">
-                Based on actual DashboardPage implementation with IncidentGroup interface
-            </div>
-            <div class="slide-number">3</div>
-        </div>
-
-        <!-- Slide 4: How It Works -->
-        <div class="slide" id="slide-3">
             <div class="slide-header">
                 <h1>How It Works: Application Flow</h1>
             </div>
@@ -722,11 +678,11 @@
             <div class="slide-footer">
                 Flow based on InputPage → LLM → DashboardPage architecture
             </div>
-            <div class="slide-number">4</div>
+            <div class="slide-number">3</div>
         </div>
 
-        <!-- Slide 5: Benefits -->
-        <div class="slide" id="slide-4">
+        <!-- Slide 4: Benefits -->
+        <div class="slide" id="slide-3">
             <div class="slide-header">
                 <h1>Benefits & Impact</h1>
             </div>
@@ -817,7 +773,7 @@
             <div class="slide-footer">
                 Impact metrics based on industry benchmarks for AI-powered incident management
             </div>
-            <div class="slide-number">5</div>
+            <div class="slide-number">4</div>
         </div>
 
         <!-- Navigation Controls -->
@@ -832,13 +788,12 @@
             <div class="progress-dot" onclick="goToSlide(1)"></div>
             <div class="progress-dot" onclick="goToSlide(2)"></div>
             <div class="progress-dot" onclick="goToSlide(3)"></div>
-            <div class="progress-dot" onclick="goToSlide(4)"></div>
         </div>
     </div>
 
     <script>
         let currentSlide = 0;
-        const totalSlides = 5;
+        const totalSlides = 4;
 
         function updateSlide() {
             for (let i = 0; i < totalSlides; i++) {
