@@ -304,135 +304,151 @@
             line-height: 1.5;
         }
 
-        .endpoint-box {
-            background: #f1f5f9;
-            border: 2px dashed #94a3b8;
-            border-radius: 10px;
-            padding: 25px;
-            margin-top: 30px;
-        }
-
-        .endpoint-box h5 {
-            color: #003366;
-            font-size: 22px;
-            margin-bottom: 10px;
-        }
-
-        .endpoint-url {
-            background: #1e293b;
-            color: #86efac;
-            padding: 15px 20px;
-            border-radius: 8px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 18px;
-            display: inline-block;
-        }
-
-        .visualization-preview {
-            background: linear-gradient(135deg, #003366 0%, #0066cc 100%);
-            color: white;
-            padding: 40px;
-            border-radius: 12px;
-            margin-top: 40px;
-        }
-
-        .visualization-preview h4 {
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-
-        .chart-preview-grid {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 30px;
-            align-items: center;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 10px 0;
-            font-size: 18px;
-        }
-
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-        }
-
-        .chart-bars {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            width: 100%;
-        }
-
-        .single-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            height: 50px;
-        }
-
-        .bar-segment {
-            height: 40px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .bar-red {
-            background: #ef4444;
-        }
-
-        .bar-orange {
-            background: #f97316;
-        }
-
-        .bar-label {
-            font-size: 12px;
-            color: #64748b;
-            font-weight: 600;
-            margin-left: 40px;
-        }
-
         /* Slide 5 - Benefits */
         .benefits-grid {
             display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .two-sections {
+            display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            gap: 20px;
             margin-bottom: 40px;
+            height: 380px;
+        }
+
+        .two-sections > div {
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .two-sections .section-card {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .two-sections .section-card > ul {
+            flex: 1;
+            overflow-y: auto;
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .two-sections .section-card > ul li {
+            font-size: 13px;
+            color: #1e293b;
+            line-height: 1.5;
+            margin-bottom: 6px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 16px;
+        }
+
+        .section-card ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .section-card li {
+            font-size: 14px;
+            color: #1e293b;
+            line-height: 1.5;
+            margin-bottom: 6px;
+        }
+
+        .two-sections .metrics-grid {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 12px !important;
+            margin-top: 12px !important;
+        }
+
+        .two-sections .metric-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%) !important;
+            padding: 12px 10px !important;
+            border-radius: 8px !important;
+            text-align: center !important;
+            border: 1px solid #86efac !important;
+        }
+
+        .two-sections .metric-value {
+            font-size: 24px !important;
+            font-weight: 700 !important;
+            color: #166534 !important;
+            margin-bottom: 4px !important;
+            line-height: 1.2 !important;
+        }
+
+        .two-sections .metric-label {
+            font-size: 12px !important;
+            color: #15803d !important;
+            font-weight: 500 !important;
+        }
+
+        .section-card h4 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #003366;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .benefit-card {
             background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            padding: 25px;
+            padding: 20px;
             border-radius: 12px;
             border-left: 6px solid #16a34a;
         }
 
         .benefit-card h4 {
             color: #166534;
-            font-size: 22px;
-            margin-bottom: 10px;
+            font-size: 18px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
 
         .benefit-card p {
             color: #15803d;
-            font-size: 17px;
+            font-size: 16px;
             line-height: 1.5;
+        }
+
+        .benefit-card small {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .segment-duplicate {
+            background: #ef4444;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .segment-similar {
+            background: #f97316;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
         }
 
         .impact-metrics {
@@ -611,70 +627,84 @@
                     <div class="step-content">
                         <div class="step-number">1</div>
                         <h4>Input Prompt</h4>
-                        <p>Send incident data to expert AI prompt via Input Page. Configure expert prompt for incident analysis with custom instructions.</p>
+                        <p>Send incident data via Input Page with expert AI prompt containing custom deduplication instructions, metadata injection, and classification rules.</p>
                     </div>
                 </div>
                 <div class="workflow-step">
                     <div class="step-content">
                         <div class="step-number">2</div>
                         <h4>LLM Inference</h4>
-                        <p>On-prem LLM endpoint receives the prompt and performs intelligent analysis using natural language processing to identify patterns.</p>
+                        <p>On-prem LLM processes semantic analysis, generates embeddings, and performs pattern recognition using natural language processing.</p>
                     </div>
                 </div>
                 <div class="workflow-step">
                     <div class="step-content">
                         <div class="step-number">3</div>
-                        <h4>Grouping</h4>
-                        <p>Results returned as IncidentGroups containing primary incident, identified duplicates, and similar incidents based on similarity scoring.</p>
+                        <h4>Similarity Scoring</h4>
+                        <p>Industry-standard embedding model generates vectors. Hybrid scoring: 70% semantic + 25% text + 5% category for confidence-based classification.</p>
                     </div>
                 </div>
                 <div class="workflow-step">
                     <div class="step-content">
                         <div class="step-number">4</div>
                         <h4>Visualization</h4>
-                        <p>Dashboard displays grouped incidents with StackedBarChart showing distribution of duplicates and similar incidents per primary.</p>
+                        <p>Dashboard displays IncidentGroups with confidence scores, StackedBarChart visualization, and full audit trail logged.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="endpoint-box">
-                <h5>🔌 Configuration</h5>
-                <p>Endpoint URL configurable in Input Page:</p>
-                <div class="endpoint-url">http://localhost:8000/inference</div>
-            </div>
-
-            <div class="visualization-preview">
-                <h4>📊 StackedBarChart Visualization Example</h4>
-                <div class="chart-preview-grid">
-                    <div class="legend">
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #ef4444;"></div>
-                            <span style="color: white;">Duplicates (Red)</span>
+            <div class="two-sections">
+                <div class="section-card">
+                    <h4 style="color: #003366; font-size: 18px; margin-bottom: 10px;">🧠 AI-Powered Analysis</h4>
+                    <ul>
+                        <li style="font-size: 16px;"><strong>Vector Embeddings:</strong> Captures semantic meaning</li>
+                        <li style="font-size: 16px;"><strong>Hybrid Scoring:</strong> 70% semantic + 25% text + 5% category</li>
+                        <li style="font-size: 16px;"><strong>Auto-Classification:</strong> Confidence-based detection</li>
+                        <li style="font-size: 16px;"><strong>IncidentGroups:</strong> Primary + duplicates + similar</li>
+                        <li style="font-size: 16px;"><strong>No Manual Review:</strong> Full audit trail</li>
+                    </ul>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div class="section-card" style="flex: 1;">
+                        <h4 style="color: #9a3412; font-size: 18px; margin-bottom: 10px;">📊 Similarity Thresholds</h4>
+                        <div style="border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; font-size: 16px;">
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); background: #f8fafc; padding: 8px 10px; font-weight: 600; color: #9a3412; font-size: 15px;">
+                                <div>Duplicate</div>
+                                <div>High Similar</div>
+                                <div>Similar</div>
+                                <div>Action</div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px; font-size: 15px; align-items: center;">
+                                <div><span class="segment-duplicate" style="font-size: 13px; padding: 3px 6px;">≥90%</span></div>
+                                <div><span class="segment-duplicate" style="font-size: 13px; padding: 3px 6px;">85-90%</span></div>
+                                <div><span class="segment-similar" style="font-size: 13px; padding: 3px 6px;">70-84%</span></div>
+                                <div style="color: #64748b;">Auto/Suggest</div>
+                            </div>
                         </div>
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: #f97316;"></div>
-                            <span style="color: white;">Similar Incidents (Orange)</span>
-                        </div>
+                        <p style="font-size: 14px; color: #64748b; margin: 8px 0 0 0;"><strong>POC:</strong> 0.90 (configurable)</p>
                     </div>
-                    <div class="chart-bars">
-                        <div class="single-bar">
-                            <div class="bar-segment bar-red" style="width: 80px;">3</div>
-                            <div class="bar-segment bar-orange" style="width: 120px;">5</div>
-                            <span class="bar-label">Incident #001</span>
-                        </div>
-                        <div class="single-bar">
-                            <div class="bar-segment bar-red" style="width: 50px;">2</div>
-                            <div class="bar-segment bar-orange" style="width: 140px;">7</div>
-                            <span class="bar-label">Incident #002</span>
-                        </div>
-                        <div class="single-bar">
-                            <div class="bar-segment bar-red" style="width: 100px;">4</div>
-                            <div class="bar-segment bar-orange" style="width: 70px;">3</div>
-                            <span class="bar-label">Incident #003</span>
+                    <div class="section-card" style="flex: 1;">
+                        <h4 style="color: #166534; font-size: 18px; margin-bottom: 10px;">⚡ Performance</h4>
+                        <div style="border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; font-size: 16px;">
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); background: #f8fafc; padding: 8px 10px; font-weight: 600; color: #166534; font-size: 15px;">
+                                <div>Time</div>
+                                <div>Accuracy</div>
+                                <div>Scale</div>
+                                <div>Config</div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px; font-size: 15px; font-weight: 700; color: #166534; align-items: center;">
+                                <div>~1-2s</div>
+                                <div>85-90%</div>
+                                <div>1K-10K</div>
+                                <div>0.85+</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+
+
             <div class="slide-footer">
                 Flow based on InputPage → LLM → DashboardPage architecture
             </div>
