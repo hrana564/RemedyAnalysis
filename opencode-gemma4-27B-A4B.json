@@ -1,18 +1,18 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "provider": {
-    "qwen-local": {
+    "gemma-local": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "Qwen Local (vLLM)",
+      "name": "Gemma Local (vLLM)",
       "options": {
         "baseURL": "http://host.docker.internal:8000/v1",
         "apiKey": "sk-local-test-0000000000000000"
       },
       "models": {
-        "qwen35": {
-          "name": "Qwen 3.5 35B (Agentic)",
+        "gemma4": {
+          "name": "Gemma 4 26B (Agentic)",
           "limit": {
-            "context": 131072,
+            "context": 65536,
             "output": 16384
           }
         }
